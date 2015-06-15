@@ -1,0 +1,7 @@
+[package]
+name = "gel"
+version = "0.1.0"
+authors = ["Cole Reynolds <cpjreynolds@gmail.com>"]
+
+[dependencies]
+num = "*"
