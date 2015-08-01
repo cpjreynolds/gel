@@ -1,1 +1,1 @@
-initSidebarItems({});
+initSidebarItems({"struct":[["Vec2",""],["Vec3",""],["Vec4",""]]});
