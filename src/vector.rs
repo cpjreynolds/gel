@@ -7,143 +7,103 @@ use std::ops::{
 
 use num::{
     Zero,
-    Float,
 };
 
-pub trait Vector<N>:
-    Add<Self, Output=Self> +
-    Add<N, Output=Self> +
-    Sub<Self, Output=Self> +
-    Sub<N, Output=Self> +
-    Mul<N, Output=Self> +
-    Div<N, Output=Self> +
-    Zero
-    where N: Float
-{
+macro_rules! impl_vec_self_binop {
+    (impl $imp:ident, $method:ident for $vec:ident { $($field:ident),+ }) => {
+        impl $imp for $vec {
+            type Output = Self;
+
+            #[inline]
+            fn $method(self, other: Self) -> Self::Output {
+                $vec { $($field: self.$field.$method(other.$field)),+ }
+            }
+        }
+        ref_binop! { impl $imp, $method for $vec, $vec }
+    }
 }
 
-#[derive(Clone, Copy, PartialEq, PartialOrd, Hash, Debug)]
-pub struct Vec3<N>
-    where N: Float
-{
-    x: N,
-    y: N,
-    z: N,
+macro_rules! impl_vec_self_binops {
+    (impl $vec:ident { $($field:ident),+ }) => {
+        impl_vec_self_binop! { impl Add, add for $vec { $($field),+ } }
+        impl_vec_self_binop! { impl Sub, sub for $vec { $($field),+ } }
+    }
 }
 
-impl<N> Vec3<N>
-    where N: Float
-{
-    fn new(x: N, y: N, z: N) -> Vec3<N> {
-        Vec3 {
-            x: x,
-            y: y,
-            z: z,
+
+
+macro_rules! impl_vec_float_binop {
+    (impl $imp:ident, $method:ident for $vec:ident { $($field:ident),+ }) => {
+        impl $imp<f32> for $vec {
+            type Output = Self;
+
+            #[inline]
+            fn $method(self, other: f32) -> Self::Output {
+                $vec { $($field: self.$field.$method(other)),+ }
+            }
+        }
+        ref_binop! { impl $imp, $method for $vec, f32 }
+    }
+}
+
+macro_rules! impl_vec_float_binops {
+    (impl $vec:ident { $($field:ident),+ }) => {
+        impl_vec_float_binop! { impl Add, add for $vec { $($field),+ } }
+        impl_vec_float_binop! { impl Sub, sub for $vec { $($field),+ } }
+        impl_vec_float_binop! { impl Div, div for $vec { $($field),+ } }
+        impl_vec_float_binop! { impl Mul, mul for $vec { $($field),+ } }
+    }
+}
+
+macro_rules! impl_vec_zero {
+    (impl $vec:ident { $($field:ident),+ }) => {
+        impl Zero for $vec {
+            fn zero() -> Self {
+                $vec { $($field: f32::zero()),+ }
+            }
+
+            fn is_zero(&self) -> bool {
+                *self == Self::zero()
+            }
         }
     }
 }
 
-impl<N> Add for Vec3<N>
-    where N: Float
-{
-    type Output = Self;
+macro_rules! impl_vec {
+    ($vec:ident { $($field:ident),+ }) => {
 
-    fn add(self, rhs: Self) -> Self::Output {
-        Vec3 {
-            x: self.x + rhs.x,
-            y: self.y + rhs.y,
-            z: self.z + rhs.z,
+        impl $vec {
+            fn new($($field: f32),+) -> $vec {
+                $vec { $($field: $field),+ }
+            }
         }
+
+        impl_vec_self_binops! { impl $vec { $($field),+ } }
+        impl_vec_float_binops! { impl $vec { $($field),+ } }
+        impl_vec_zero! { impl $vec { $($field),+ } }
     }
 }
 
-impl<N> Add<N> for Vec3<N>
-    where N: Float
-{
-    type Output = Self;
-
-    fn add(self, rhs: N) -> Self::Output {
-        Vec3 {
-            x: self.x + rhs,
-            y: self.y + rhs,
-            z: self.z + rhs,
-        }
-    }
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct Vec2 {
+    pub x: f32,
+    pub y: f32,
 }
+impl_vec! { Vec2 { x, y } }
 
-impl<N> Sub for Vec3<N>
-    where N: Float
-{
-    type Output = Self;
-
-    fn sub(self, rhs: Self) -> Self::Output {
-        Vec3 {
-            x: self.x - rhs.x,
-            y: self.y - rhs.y,
-            z: self.z - rhs.z,
-        }
-    }
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct Vec3 {
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
 }
+impl_vec! { Vec3 { x, y, z } }
 
-impl<N> Sub<N> for Vec3<N>
-    where N: Float
-{
-    type Output = Self;
-
-    fn sub(self, rhs: N) -> Self::Output {
-        Vec3 {
-            x: self.x - rhs,
-            y: self.y - rhs,
-            z: self.z - rhs,
-        }
-    }
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct Vec4 {
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
+    pub w: f32,
 }
-
-impl<N> Mul<N> for Vec3<N>
-    where N: Float
-{
-    type Output = Self;
-
-    fn mul(self, rhs: N) -> Self::Output {
-        Vec3 {
-            x: self.x * rhs,
-            y: self.y * rhs,
-            z: self.z * rhs,
-        }
-    }
-}
-
-impl<N> Div<N> for Vec3<N>
-    where N: Float
-{
-    type Output = Self;
-
-    fn div(self, rhs: N) -> Self::Output {
-        Vec3 {
-            x: self.x / rhs,
-            y: self.y / rhs,
-            z: self.z / rhs,
-        }
-    }
-}
-
-impl<N> Zero for Vec3<N>
-    where N: Float
-{
-    fn zero() -> Self {
-        Vec3 {
-            x: N::zero(),
-            y: N::zero(),
-            z: N::zero(),
-        }
-    }
-
-    fn is_zero(&self) -> bool {
-        *self == Self::zero()
-    }
-}
-
-impl<N> Vector<N> for Vec3<N>
-    where N: Float
-{
-}
+impl_vec! { Vec4 { x, y, z, w } }
