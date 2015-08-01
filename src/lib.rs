@@ -37,3 +37,8 @@ macro_rules! ref_binop {
 mod vector;
 mod matrix;
 
+pub use vector::{
+    Vec2,
+    Vec3,
+    Vec4,
+};
