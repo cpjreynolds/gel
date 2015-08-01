@@ -2,6 +2,12 @@
 name = "gel"
 version = "0.1.0"
 authors = ["Cole Reynolds <cpjreynolds@gmail.com>"]
+description = "OpenGL Mathematics Library"
+documentation = "https://cpjreynolds.github.io/gel"
+repository = "https://github.com/cpjreynolds/gel"
+homepage = "https://github.com/cpjreynolds/gel"
+readme = "README.md"
+license = "MIT"
 
 [dependencies]
 num = "*"
