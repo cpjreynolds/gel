@@ -84,6 +84,7 @@ macro_rules! impl_vec {
     }
 }
 
+#[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct Vec2 {
     pub x: f32,
@@ -91,6 +92,7 @@ pub struct Vec2 {
 }
 impl_vec! { Vec2 { x, y } }
 
+#[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct Vec3 {
     pub x: f32,
@@ -99,6 +101,7 @@ pub struct Vec3 {
 }
 impl_vec! { Vec3 { x, y, z } }
 
+#[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct Vec4 {
     pub x: f32,
