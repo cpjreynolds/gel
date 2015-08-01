@@ -149,46 +149,6 @@
 <span id="107">107</span>
 <span id="108">108</span>
 <span id="109">109</span>
-<span id="110">110</span>
-<span id="111">111</span>
-<span id="112">112</span>
-<span id="113">113</span>
-<span id="114">114</span>
-<span id="115">115</span>
-<span id="116">116</span>
-<span id="117">117</span>
-<span id="118">118</span>
-<span id="119">119</span>
-<span id="120">120</span>
-<span id="121">121</span>
-<span id="122">122</span>
-<span id="123">123</span>
-<span id="124">124</span>
-<span id="125">125</span>
-<span id="126">126</span>
-<span id="127">127</span>
-<span id="128">128</span>
-<span id="129">129</span>
-<span id="130">130</span>
-<span id="131">131</span>
-<span id="132">132</span>
-<span id="133">133</span>
-<span id="134">134</span>
-<span id="135">135</span>
-<span id="136">136</span>
-<span id="137">137</span>
-<span id="138">138</span>
-<span id="139">139</span>
-<span id="140">140</span>
-<span id="141">141</span>
-<span id="142">142</span>
-<span id="143">143</span>
-<span id="144">144</span>
-<span id="145">145</span>
-<span id="146">146</span>
-<span id="147">147</span>
-<span id="148">148</span>
-<span id="149">149</span>
 </pre><pre class='rust '>
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>ops</span>::{
     <span class='ident'>Add</span>,
@@ -199,146 +159,106 @@
 
 <span class='kw'>use</span> <span class='ident'>num</span>::{
     <span class='ident'>Zero</span>,
-    <span class='ident'>Float</span>,
 };
 
-<span class='kw'>pub</span> <span class='kw'>trait</span> <span class='ident'>Vector</span><span class='op'>&lt;</span><span class='ident'>N</span><span class='op'>&gt;</span>:
-    <span class='ident'>Add</span><span class='op'>&lt;</span><span class='kw'>Self</span>, <span class='ident'>Output</span><span class='op'>=</span><span class='kw'>Self</span><span class='op'>&gt;</span> <span class='op'>+</span>
-    <span class='ident'>Add</span><span class='op'>&lt;</span><span class='ident'>N</span>, <span class='ident'>Output</span><span class='op'>=</span><span class='kw'>Self</span><span class='op'>&gt;</span> <span class='op'>+</span>
-    <span class='ident'>Sub</span><span class='op'>&lt;</span><span class='kw'>Self</span>, <span class='ident'>Output</span><span class='op'>=</span><span class='kw'>Self</span><span class='op'>&gt;</span> <span class='op'>+</span>
-    <span class='ident'>Sub</span><span class='op'>&lt;</span><span class='ident'>N</span>, <span class='ident'>Output</span><span class='op'>=</span><span class='kw'>Self</span><span class='op'>&gt;</span> <span class='op'>+</span>
-    <span class='ident'>Mul</span><span class='op'>&lt;</span><span class='ident'>N</span>, <span class='ident'>Output</span><span class='op'>=</span><span class='kw'>Self</span><span class='op'>&gt;</span> <span class='op'>+</span>
-    <span class='ident'>Div</span><span class='op'>&lt;</span><span class='ident'>N</span>, <span class='ident'>Output</span><span class='op'>=</span><span class='kw'>Self</span><span class='op'>&gt;</span> <span class='op'>+</span>
-    <span class='ident'>Zero</span>
-    <span class='kw'>where</span> <span class='ident'>N</span>: <span class='ident'>Float</span>
-{
+<span class='macro'>macro_rules</span><span class='macro'>!</span> <span class='ident'>impl_vec_self_binop</span> {
+    (<span class='kw'>impl</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>imp</span>:<span class='ident'>ident</span>, <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>method</span>:<span class='ident'>ident</span> <span class='kw'>for</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>vec</span>:<span class='ident'>ident</span> { $(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>field</span>:<span class='ident'>ident</span>),<span class='op'>+</span> }) <span class='op'>=&gt;</span> {
+        <span class='kw'>impl</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>imp</span> <span class='kw'>for</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>vec</span> {
+            <span class='kw'>type</span> <span class='ident'>Output</span> <span class='op'>=</span> <span class='kw'>Self</span>;
+
+            <span class='attribute'>#[<span class='ident'>inline</span>]</span>
+            <span class='kw'>fn</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>method</span>(<span class='self'>self</span>, <span class='ident'>other</span>: <span class='kw'>Self</span>) <span class='op'>-&gt;</span> <span class='ident'>Self</span>::<span class='ident'>Output</span> {
+                <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>vec</span> { $(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>field</span>: <span class='self'>self</span>.<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>field</span>.<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>method</span>(<span class='ident'>other</span>.<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>field</span>)),<span class='op'>+</span> }
+            }
+        }
+        <span class='macro'>ref_binop</span><span class='macro'>!</span> { <span class='kw'>impl</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>imp</span>, <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>method</span> <span class='kw'>for</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>vec</span>, <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>vec</span> }
+    }
 }
 
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>, <span class='ident'>Copy</span>, <span class='ident'>PartialEq</span>, <span class='ident'>PartialOrd</span>, <span class='ident'>Hash</span>, <span class='ident'>Debug</span>)]</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Vec3</span><span class='op'>&lt;</span><span class='ident'>N</span><span class='op'>&gt;</span>
-    <span class='kw'>where</span> <span class='ident'>N</span>: <span class='ident'>Float</span>
-{
-    <span class='ident'>x</span>: <span class='ident'>N</span>,
-    <span class='ident'>y</span>: <span class='ident'>N</span>,
-    <span class='ident'>z</span>: <span class='ident'>N</span>,
+<span class='macro'>macro_rules</span><span class='macro'>!</span> <span class='ident'>impl_vec_self_binops</span> {
+    (<span class='kw'>impl</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>vec</span>:<span class='ident'>ident</span> { $(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>field</span>:<span class='ident'>ident</span>),<span class='op'>+</span> }) <span class='op'>=&gt;</span> {
+        <span class='macro'>impl_vec_self_binop</span><span class='macro'>!</span> { <span class='kw'>impl</span> <span class='ident'>Add</span>, <span class='ident'>add</span> <span class='kw'>for</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>vec</span> { $(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>field</span>),<span class='op'>+</span> } }
+        <span class='macro'>impl_vec_self_binop</span><span class='macro'>!</span> { <span class='kw'>impl</span> <span class='ident'>Sub</span>, <span class='ident'>sub</span> <span class='kw'>for</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>vec</span> { $(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>field</span>),<span class='op'>+</span> } }
+    }
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>N</span><span class='op'>&gt;</span> <span class='ident'>Vec3</span><span class='op'>&lt;</span><span class='ident'>N</span><span class='op'>&gt;</span>
-    <span class='kw'>where</span> <span class='ident'>N</span>: <span class='ident'>Float</span>
-{
-    <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>x</span>: <span class='ident'>N</span>, <span class='ident'>y</span>: <span class='ident'>N</span>, <span class='ident'>z</span>: <span class='ident'>N</span>) <span class='op'>-&gt;</span> <span class='ident'>Vec3</span><span class='op'>&lt;</span><span class='ident'>N</span><span class='op'>&gt;</span> {
-        <span class='ident'>Vec3</span> {
-            <span class='ident'>x</span>: <span class='ident'>x</span>,
-            <span class='ident'>y</span>: <span class='ident'>y</span>,
-            <span class='ident'>z</span>: <span class='ident'>z</span>,
+
+
+<span class='macro'>macro_rules</span><span class='macro'>!</span> <span class='ident'>impl_vec_float_binop</span> {
+    (<span class='kw'>impl</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>imp</span>:<span class='ident'>ident</span>, <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>method</span>:<span class='ident'>ident</span> <span class='kw'>for</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>vec</span>:<span class='ident'>ident</span> { $(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>field</span>:<span class='ident'>ident</span>),<span class='op'>+</span> }) <span class='op'>=&gt;</span> {
+        <span class='kw'>impl</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>imp</span><span class='op'>&lt;</span><span class='ident'>f32</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>vec</span> {
+            <span class='kw'>type</span> <span class='ident'>Output</span> <span class='op'>=</span> <span class='kw'>Self</span>;
+
+            <span class='attribute'>#[<span class='ident'>inline</span>]</span>
+            <span class='kw'>fn</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>method</span>(<span class='self'>self</span>, <span class='ident'>other</span>: <span class='ident'>f32</span>) <span class='op'>-&gt;</span> <span class='ident'>Self</span>::<span class='ident'>Output</span> {
+                <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>vec</span> { $(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>field</span>: <span class='self'>self</span>.<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>field</span>.<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>method</span>(<span class='ident'>other</span>)),<span class='op'>+</span> }
+            }
+        }
+        <span class='macro'>ref_binop</span><span class='macro'>!</span> { <span class='kw'>impl</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>imp</span>, <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>method</span> <span class='kw'>for</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>vec</span>, <span class='ident'>f32</span> }
+    }
+}
+
+<span class='macro'>macro_rules</span><span class='macro'>!</span> <span class='ident'>impl_vec_float_binops</span> {
+    (<span class='kw'>impl</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>vec</span>:<span class='ident'>ident</span> { $(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>field</span>:<span class='ident'>ident</span>),<span class='op'>+</span> }) <span class='op'>=&gt;</span> {
+        <span class='macro'>impl_vec_float_binop</span><span class='macro'>!</span> { <span class='kw'>impl</span> <span class='ident'>Add</span>, <span class='ident'>add</span> <span class='kw'>for</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>vec</span> { $(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>field</span>),<span class='op'>+</span> } }
+        <span class='macro'>impl_vec_float_binop</span><span class='macro'>!</span> { <span class='kw'>impl</span> <span class='ident'>Sub</span>, <span class='ident'>sub</span> <span class='kw'>for</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>vec</span> { $(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>field</span>),<span class='op'>+</span> } }
+        <span class='macro'>impl_vec_float_binop</span><span class='macro'>!</span> { <span class='kw'>impl</span> <span class='ident'>Div</span>, <span class='ident'>div</span> <span class='kw'>for</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>vec</span> { $(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>field</span>),<span class='op'>+</span> } }
+        <span class='macro'>impl_vec_float_binop</span><span class='macro'>!</span> { <span class='kw'>impl</span> <span class='ident'>Mul</span>, <span class='ident'>mul</span> <span class='kw'>for</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>vec</span> { $(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>field</span>),<span class='op'>+</span> } }
+    }
+}
+
+<span class='macro'>macro_rules</span><span class='macro'>!</span> <span class='ident'>impl_vec_zero</span> {
+    (<span class='kw'>impl</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>vec</span>:<span class='ident'>ident</span> { $(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>field</span>:<span class='ident'>ident</span>),<span class='op'>+</span> }) <span class='op'>=&gt;</span> {
+        <span class='kw'>impl</span> <span class='ident'>Zero</span> <span class='kw'>for</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>vec</span> {
+            <span class='kw'>fn</span> <span class='ident'>zero</span>() <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
+                <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>vec</span> { $(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>field</span>: <span class='ident'>f32</span>::<span class='ident'>zero</span>()),<span class='op'>+</span> }
+            }
+
+            <span class='kw'>fn</span> <span class='ident'>is_zero</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
+                <span class='op'>*</span><span class='self'>self</span> <span class='op'>==</span> <span class='ident'>Self</span>::<span class='ident'>zero</span>()
+            }
         }
     }
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>N</span><span class='op'>&gt;</span> <span class='ident'>Add</span> <span class='kw'>for</span> <span class='ident'>Vec3</span><span class='op'>&lt;</span><span class='ident'>N</span><span class='op'>&gt;</span>
-    <span class='kw'>where</span> <span class='ident'>N</span>: <span class='ident'>Float</span>
-{
-    <span class='kw'>type</span> <span class='ident'>Output</span> <span class='op'>=</span> <span class='kw'>Self</span>;
+<span class='macro'>macro_rules</span><span class='macro'>!</span> <span class='ident'>impl_vec</span> {
+    (<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>vec</span>:<span class='ident'>ident</span> { $(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>field</span>:<span class='ident'>ident</span>),<span class='op'>+</span> }) <span class='op'>=&gt;</span> {
 
-    <span class='kw'>fn</span> <span class='ident'>add</span>(<span class='self'>self</span>, <span class='ident'>rhs</span>: <span class='kw'>Self</span>) <span class='op'>-&gt;</span> <span class='ident'>Self</span>::<span class='ident'>Output</span> {
-        <span class='ident'>Vec3</span> {
-            <span class='ident'>x</span>: <span class='self'>self</span>.<span class='ident'>x</span> <span class='op'>+</span> <span class='ident'>rhs</span>.<span class='ident'>x</span>,
-            <span class='ident'>y</span>: <span class='self'>self</span>.<span class='ident'>y</span> <span class='op'>+</span> <span class='ident'>rhs</span>.<span class='ident'>y</span>,
-            <span class='ident'>z</span>: <span class='self'>self</span>.<span class='ident'>z</span> <span class='op'>+</span> <span class='ident'>rhs</span>.<span class='ident'>z</span>,
+        <span class='kw'>impl</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>vec</span> {
+            <span class='kw'>fn</span> <span class='ident'>new</span>($(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>field</span>: <span class='ident'>f32</span>),<span class='op'>+</span>) <span class='op'>-&gt;</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>vec</span> {
+                <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>vec</span> { $(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>field</span>: <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>field</span>),<span class='op'>+</span> }
+            }
         }
+
+        <span class='macro'>impl_vec_self_binops</span><span class='macro'>!</span> { <span class='kw'>impl</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>vec</span> { $(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>field</span>),<span class='op'>+</span> } }
+        <span class='macro'>impl_vec_float_binops</span><span class='macro'>!</span> { <span class='kw'>impl</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>vec</span> { $(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>field</span>),<span class='op'>+</span> } }
+        <span class='macro'>impl_vec_zero</span><span class='macro'>!</span> { <span class='kw'>impl</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>vec</span> { $(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>field</span>),<span class='op'>+</span> } }
     }
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>N</span><span class='op'>&gt;</span> <span class='ident'>Add</span><span class='op'>&lt;</span><span class='ident'>N</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>Vec3</span><span class='op'>&lt;</span><span class='ident'>N</span><span class='op'>&gt;</span>
-    <span class='kw'>where</span> <span class='ident'>N</span>: <span class='ident'>Float</span>
-{
-    <span class='kw'>type</span> <span class='ident'>Output</span> <span class='op'>=</span> <span class='kw'>Self</span>;
-
-    <span class='kw'>fn</span> <span class='ident'>add</span>(<span class='self'>self</span>, <span class='ident'>rhs</span>: <span class='ident'>N</span>) <span class='op'>-&gt;</span> <span class='ident'>Self</span>::<span class='ident'>Output</span> {
-        <span class='ident'>Vec3</span> {
-            <span class='ident'>x</span>: <span class='self'>self</span>.<span class='ident'>x</span> <span class='op'>+</span> <span class='ident'>rhs</span>,
-            <span class='ident'>y</span>: <span class='self'>self</span>.<span class='ident'>y</span> <span class='op'>+</span> <span class='ident'>rhs</span>,
-            <span class='ident'>z</span>: <span class='self'>self</span>.<span class='ident'>z</span> <span class='op'>+</span> <span class='ident'>rhs</span>,
-        }
-    }
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>, <span class='ident'>Clone</span>, <span class='ident'>Copy</span>, <span class='ident'>PartialEq</span>, <span class='ident'>PartialOrd</span>)]</span>
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Vec2</span> {
+    <span class='kw'>pub</span> <span class='ident'>x</span>: <span class='ident'>f32</span>,
+    <span class='kw'>pub</span> <span class='ident'>y</span>: <span class='ident'>f32</span>,
 }
+<span class='macro'>impl_vec</span><span class='macro'>!</span> { <span class='ident'>Vec2</span> { <span class='ident'>x</span>, <span class='ident'>y</span> } }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>N</span><span class='op'>&gt;</span> <span class='ident'>Sub</span> <span class='kw'>for</span> <span class='ident'>Vec3</span><span class='op'>&lt;</span><span class='ident'>N</span><span class='op'>&gt;</span>
-    <span class='kw'>where</span> <span class='ident'>N</span>: <span class='ident'>Float</span>
-{
-    <span class='kw'>type</span> <span class='ident'>Output</span> <span class='op'>=</span> <span class='kw'>Self</span>;
-
-    <span class='kw'>fn</span> <span class='ident'>sub</span>(<span class='self'>self</span>, <span class='ident'>rhs</span>: <span class='kw'>Self</span>) <span class='op'>-&gt;</span> <span class='ident'>Self</span>::<span class='ident'>Output</span> {
-        <span class='ident'>Vec3</span> {
-            <span class='ident'>x</span>: <span class='self'>self</span>.<span class='ident'>x</span> <span class='op'>-</span> <span class='ident'>rhs</span>.<span class='ident'>x</span>,
-            <span class='ident'>y</span>: <span class='self'>self</span>.<span class='ident'>y</span> <span class='op'>-</span> <span class='ident'>rhs</span>.<span class='ident'>y</span>,
-            <span class='ident'>z</span>: <span class='self'>self</span>.<span class='ident'>z</span> <span class='op'>-</span> <span class='ident'>rhs</span>.<span class='ident'>z</span>,
-        }
-    }
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>, <span class='ident'>Clone</span>, <span class='ident'>Copy</span>, <span class='ident'>PartialEq</span>, <span class='ident'>PartialOrd</span>)]</span>
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Vec3</span> {
+    <span class='kw'>pub</span> <span class='ident'>x</span>: <span class='ident'>f32</span>,
+    <span class='kw'>pub</span> <span class='ident'>y</span>: <span class='ident'>f32</span>,
+    <span class='kw'>pub</span> <span class='ident'>z</span>: <span class='ident'>f32</span>,
 }
+<span class='macro'>impl_vec</span><span class='macro'>!</span> { <span class='ident'>Vec3</span> { <span class='ident'>x</span>, <span class='ident'>y</span>, <span class='ident'>z</span> } }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>N</span><span class='op'>&gt;</span> <span class='ident'>Sub</span><span class='op'>&lt;</span><span class='ident'>N</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>Vec3</span><span class='op'>&lt;</span><span class='ident'>N</span><span class='op'>&gt;</span>
-    <span class='kw'>where</span> <span class='ident'>N</span>: <span class='ident'>Float</span>
-{
-    <span class='kw'>type</span> <span class='ident'>Output</span> <span class='op'>=</span> <span class='kw'>Self</span>;
-
-    <span class='kw'>fn</span> <span class='ident'>sub</span>(<span class='self'>self</span>, <span class='ident'>rhs</span>: <span class='ident'>N</span>) <span class='op'>-&gt;</span> <span class='ident'>Self</span>::<span class='ident'>Output</span> {
-        <span class='ident'>Vec3</span> {
-            <span class='ident'>x</span>: <span class='self'>self</span>.<span class='ident'>x</span> <span class='op'>-</span> <span class='ident'>rhs</span>,
-            <span class='ident'>y</span>: <span class='self'>self</span>.<span class='ident'>y</span> <span class='op'>-</span> <span class='ident'>rhs</span>,
-            <span class='ident'>z</span>: <span class='self'>self</span>.<span class='ident'>z</span> <span class='op'>-</span> <span class='ident'>rhs</span>,
-        }
-    }
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>, <span class='ident'>Clone</span>, <span class='ident'>Copy</span>, <span class='ident'>PartialEq</span>, <span class='ident'>PartialOrd</span>)]</span>
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Vec4</span> {
+    <span class='kw'>pub</span> <span class='ident'>x</span>: <span class='ident'>f32</span>,
+    <span class='kw'>pub</span> <span class='ident'>y</span>: <span class='ident'>f32</span>,
+    <span class='kw'>pub</span> <span class='ident'>z</span>: <span class='ident'>f32</span>,
+    <span class='kw'>pub</span> <span class='ident'>w</span>: <span class='ident'>f32</span>,
 }
-
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>N</span><span class='op'>&gt;</span> <span class='ident'>Mul</span><span class='op'>&lt;</span><span class='ident'>N</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>Vec3</span><span class='op'>&lt;</span><span class='ident'>N</span><span class='op'>&gt;</span>
-    <span class='kw'>where</span> <span class='ident'>N</span>: <span class='ident'>Float</span>
-{
-    <span class='kw'>type</span> <span class='ident'>Output</span> <span class='op'>=</span> <span class='kw'>Self</span>;
-
-    <span class='kw'>fn</span> <span class='ident'>mul</span>(<span class='self'>self</span>, <span class='ident'>rhs</span>: <span class='ident'>N</span>) <span class='op'>-&gt;</span> <span class='ident'>Self</span>::<span class='ident'>Output</span> {
-        <span class='ident'>Vec3</span> {
-            <span class='ident'>x</span>: <span class='self'>self</span>.<span class='ident'>x</span> <span class='op'>*</span> <span class='ident'>rhs</span>,
-            <span class='ident'>y</span>: <span class='self'>self</span>.<span class='ident'>y</span> <span class='op'>*</span> <span class='ident'>rhs</span>,
-            <span class='ident'>z</span>: <span class='self'>self</span>.<span class='ident'>z</span> <span class='op'>*</span> <span class='ident'>rhs</span>,
-        }
-    }
-}
-
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>N</span><span class='op'>&gt;</span> <span class='ident'>Div</span><span class='op'>&lt;</span><span class='ident'>N</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>Vec3</span><span class='op'>&lt;</span><span class='ident'>N</span><span class='op'>&gt;</span>
-    <span class='kw'>where</span> <span class='ident'>N</span>: <span class='ident'>Float</span>
-{
-    <span class='kw'>type</span> <span class='ident'>Output</span> <span class='op'>=</span> <span class='kw'>Self</span>;
-
-    <span class='kw'>fn</span> <span class='ident'>div</span>(<span class='self'>self</span>, <span class='ident'>rhs</span>: <span class='ident'>N</span>) <span class='op'>-&gt;</span> <span class='ident'>Self</span>::<span class='ident'>Output</span> {
-        <span class='ident'>Vec3</span> {
-            <span class='ident'>x</span>: <span class='self'>self</span>.<span class='ident'>x</span> <span class='op'>/</span> <span class='ident'>rhs</span>,
-            <span class='ident'>y</span>: <span class='self'>self</span>.<span class='ident'>y</span> <span class='op'>/</span> <span class='ident'>rhs</span>,
-            <span class='ident'>z</span>: <span class='self'>self</span>.<span class='ident'>z</span> <span class='op'>/</span> <span class='ident'>rhs</span>,
-        }
-    }
-}
-
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>N</span><span class='op'>&gt;</span> <span class='ident'>Zero</span> <span class='kw'>for</span> <span class='ident'>Vec3</span><span class='op'>&lt;</span><span class='ident'>N</span><span class='op'>&gt;</span>
-    <span class='kw'>where</span> <span class='ident'>N</span>: <span class='ident'>Float</span>
-{
-    <span class='kw'>fn</span> <span class='ident'>zero</span>() <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
-        <span class='ident'>Vec3</span> {
-            <span class='ident'>x</span>: <span class='ident'>N</span>::<span class='ident'>zero</span>(),
-            <span class='ident'>y</span>: <span class='ident'>N</span>::<span class='ident'>zero</span>(),
-            <span class='ident'>z</span>: <span class='ident'>N</span>::<span class='ident'>zero</span>(),
-        }
-    }
-
-    <span class='kw'>fn</span> <span class='ident'>is_zero</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='op'>*</span><span class='self'>self</span> <span class='op'>==</span> <span class='ident'>Self</span>::<span class='ident'>zero</span>()
-    }
-}
-
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>N</span><span class='op'>&gt;</span> <span class='ident'>Vector</span><span class='op'>&lt;</span><span class='ident'>N</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>Vec3</span><span class='op'>&lt;</span><span class='ident'>N</span><span class='op'>&gt;</span>
-    <span class='kw'>where</span> <span class='ident'>N</span>: <span class='ident'>Float</span>
-{
-}
+<span class='macro'>impl_vec</span><span class='macro'>!</span> { <span class='ident'>Vec4</span> { <span class='ident'>x</span>, <span class='ident'>y</span>, <span class='ident'>z</span>, <span class='ident'>w</span> } }
 </pre>
 </section>
     <section id='search' class="content hidden"></section>

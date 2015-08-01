@@ -1,1 +1,1 @@
-initSidebarItems({"trait":[["Vector",""]]});
+initSidebarItems({});
