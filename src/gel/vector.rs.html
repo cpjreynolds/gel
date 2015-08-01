@@ -149,6 +149,9 @@
 <span id="107">107</span>
 <span id="108">108</span>
 <span id="109">109</span>
+<span id="110">110</span>
+<span id="111">111</span>
+<span id="112">112</span>
 </pre><pre class='rust '>
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>ops</span>::{
     <span class='ident'>Add</span>,
@@ -236,6 +239,7 @@
     }
 }
 
+<span class='attribute'>#[<span class='ident'>repr</span>(<span class='ident'>C</span>)]</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>, <span class='ident'>Clone</span>, <span class='ident'>Copy</span>, <span class='ident'>PartialEq</span>, <span class='ident'>PartialOrd</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Vec2</span> {
     <span class='kw'>pub</span> <span class='ident'>x</span>: <span class='ident'>f32</span>,
@@ -243,6 +247,7 @@
 }
 <span class='macro'>impl_vec</span><span class='macro'>!</span> { <span class='ident'>Vec2</span> { <span class='ident'>x</span>, <span class='ident'>y</span> } }
 
+<span class='attribute'>#[<span class='ident'>repr</span>(<span class='ident'>C</span>)]</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>, <span class='ident'>Clone</span>, <span class='ident'>Copy</span>, <span class='ident'>PartialEq</span>, <span class='ident'>PartialOrd</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Vec3</span> {
     <span class='kw'>pub</span> <span class='ident'>x</span>: <span class='ident'>f32</span>,
@@ -251,6 +256,7 @@
 }
 <span class='macro'>impl_vec</span><span class='macro'>!</span> { <span class='ident'>Vec3</span> { <span class='ident'>x</span>, <span class='ident'>y</span>, <span class='ident'>z</span> } }
 
+<span class='attribute'>#[<span class='ident'>repr</span>(<span class='ident'>C</span>)]</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>, <span class='ident'>Clone</span>, <span class='ident'>Copy</span>, <span class='ident'>PartialEq</span>, <span class='ident'>PartialOrd</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Vec4</span> {
     <span class='kw'>pub</span> <span class='ident'>x</span>: <span class='ident'>f32</span>,
