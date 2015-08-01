@@ -3,8 +3,8 @@ extern crate num;
 // Implements binary operators "&T op U", "T op &U" and "&T op &U"
 // based on "T op U" where T and U are expected to be `Copy`able.
 // Taken from stdlib. Extremely useful.
-macro_rules! ref_binop {
-    (impl $imp:ident, $method:ident for $t:ty, $u:ty) => {
+macro_rules! binop_ref_impl {
+    ($imp:ident, $method:ident for $t:ty, $u:ty) => {
         impl<'a> $imp<$u> for &'a $t {
             type Output = <$t as $imp<$u>>::Output;
 

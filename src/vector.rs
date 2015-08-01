@@ -9,8 +9,8 @@ use num::{
     Zero,
 };
 
-macro_rules! impl_vec_self_binop {
-    (impl $imp:ident, $method:ident for $vec:ident { $($field:ident),+ }) => {
+macro_rules! vec_self_binop_impl {
+    ($imp:ident, $method:ident for $vec:ident, $($field:ident),+) => {
         impl $imp for $vec {
             type Output = Self;
 
@@ -19,21 +19,12 @@ macro_rules! impl_vec_self_binop {
                 $vec { $($field: self.$field.$method(other.$field)),+ }
             }
         }
-        ref_binop! { impl $imp, $method for $vec, $vec }
+        binop_ref_impl! { $imp, $method for $vec, $vec }
     }
 }
 
-macro_rules! impl_vec_self_binops {
-    (impl $vec:ident { $($field:ident),+ }) => {
-        impl_vec_self_binop! { impl Add, add for $vec { $($field),+ } }
-        impl_vec_self_binop! { impl Sub, sub for $vec { $($field),+ } }
-    }
-}
-
-
-
-macro_rules! impl_vec_float_binop {
-    (impl $imp:ident, $method:ident for $vec:ident { $($field:ident),+ }) => {
+macro_rules! vec_float_binop_impl {
+    ($imp:ident, $method:ident for $vec:ident, $($field:ident),+) => {
         impl $imp<f32> for $vec {
             type Output = Self;
 
@@ -42,21 +33,12 @@ macro_rules! impl_vec_float_binop {
                 $vec { $($field: self.$field.$method(other)),+ }
             }
         }
-        ref_binop! { impl $imp, $method for $vec, f32 }
+        binop_ref_impl! { $imp, $method for $vec, f32 }
     }
 }
 
-macro_rules! impl_vec_float_binops {
-    (impl $vec:ident { $($field:ident),+ }) => {
-        impl_vec_float_binop! { impl Add, add for $vec { $($field),+ } }
-        impl_vec_float_binop! { impl Sub, sub for $vec { $($field),+ } }
-        impl_vec_float_binop! { impl Div, div for $vec { $($field),+ } }
-        impl_vec_float_binop! { impl Mul, mul for $vec { $($field),+ } }
-    }
-}
-
-macro_rules! impl_vec_zero {
-    (impl $vec:ident { $($field:ident),+ }) => {
+macro_rules! vec_zero_impl {
+    ($vec:ident, $($field:ident),+) => {
         impl Zero for $vec {
             fn zero() -> Self {
                 $vec { $($field: f32::zero()),+ }
@@ -69,20 +51,31 @@ macro_rules! impl_vec_zero {
     }
 }
 
-macro_rules! impl_vec {
-    ($vec:ident { $($field:ident),+ }) => {
-
+macro_rules! vec_new_impl {
+    ($vec:ident, $($field:ident),+) => {
         impl $vec {
             fn new($($field: f32),+) -> $vec {
                 $vec { $($field: $field),+ }
             }
         }
-
-        impl_vec_self_binops! { impl $vec { $($field),+ } }
-        impl_vec_float_binops! { impl $vec { $($field),+ } }
-        impl_vec_zero! { impl $vec { $($field),+ } }
     }
 }
+
+macro_rules! vec_impl {
+    ($vec:ident, $($field:ident),+) => {
+        vec_new_impl!{ $vec, $($field),+ }
+        vec_zero_impl!{ $vec, $($field),+ }
+
+        vec_self_binop_impl!{ Add, add for $vec, $($field),+ }
+        vec_self_binop_impl!{ Sub, sub for $vec, $($field),+ }
+
+        vec_float_binop_impl!{ Add, add for $vec, $($field),+ }
+        vec_float_binop_impl!{ Sub, sub for $vec, $($field),+ }
+        vec_float_binop_impl!{ Mul, mul for $vec, $($field),+ }
+        vec_float_binop_impl!{ Div, div for $vec, $($field),+ }
+    }
+}
+
 
 #[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
@@ -90,7 +83,7 @@ pub struct Vec2 {
     pub x: f32,
     pub y: f32,
 }
-impl_vec! { Vec2 { x, y } }
+vec_impl!(Vec2, x, y);
 
 #[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
@@ -99,7 +92,7 @@ pub struct Vec3 {
     pub y: f32,
     pub z: f32,
 }
-impl_vec! { Vec3 { x, y, z } }
+vec_impl!(Vec3, x, y, z);
 
 #[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
@@ -109,4 +102,4 @@ pub struct Vec4 {
     pub z: f32,
     pub w: f32,
 }
-impl_vec! { Vec4 { x, y, z, w } }
+vec_impl!(Vec4, x, y, z, w);
