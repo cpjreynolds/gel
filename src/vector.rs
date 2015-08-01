@@ -5,6 +5,8 @@ use std::ops::{
     Div,
 };
 
+use std::mem;
+
 use num::{
     Zero,
 };
@@ -61,8 +63,28 @@ macro_rules! vec_new_impl {
     }
 }
 
+macro_rules! vec_as_array_impl {
+    ($vec:ident, $n:expr) => {
+        impl $vec {
+            pub fn as_array(&self) -> &[f32; $n] {
+                unsafe {
+                    mem::transmute(self)
+                }
+            }
+
+            pub fn as_array_mut(&mut self) -> &mut [f32; $n] {
+                unsafe {
+                    mem::transmute(self)
+                }
+            }
+        }
+    }
+}
+
+
+
 macro_rules! vec_impl {
-    ($vec:ident, $($field:ident),+) => {
+    ($vec:ident, $n:expr, $($field:ident),+) => {
         vec_new_impl!{ $vec, $($field),+ }
         vec_zero_impl!{ $vec, $($field),+ }
 
@@ -73,6 +95,8 @@ macro_rules! vec_impl {
         vec_float_binop_impl!{ Sub, sub for $vec, $($field),+ }
         vec_float_binop_impl!{ Mul, mul for $vec, $($field),+ }
         vec_float_binop_impl!{ Div, div for $vec, $($field),+ }
+
+        vec_as_array_impl!{ $vec, $n }
     }
 }
 
@@ -83,7 +107,7 @@ pub struct Vec2 {
     pub x: f32,
     pub y: f32,
 }
-vec_impl!(Vec2, x, y);
+vec_impl!(Vec2, 2, x, y);
 
 #[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
@@ -92,7 +116,7 @@ pub struct Vec3 {
     pub y: f32,
     pub z: f32,
 }
-vec_impl!(Vec3, x, y, z);
+vec_impl!(Vec3, 3, x, y, z);
 
 #[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
@@ -102,4 +126,4 @@ pub struct Vec4 {
     pub z: f32,
     pub w: f32,
 }
-vec_impl!(Vec4, x, y, z, w);
+vec_impl!(Vec4, 4, x, y, z, w);
