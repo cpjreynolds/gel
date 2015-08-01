@@ -16,7 +16,6 @@ git reset upstream/gh-pages
 echo "<meta http-equiv=refresh content=0;url=gel/index.html>" > index.html
 
 touch .
-
 git add -A
 git commit -m "rebuild pages at ${rev}"
 git push upstream HEAD:gh-pages
