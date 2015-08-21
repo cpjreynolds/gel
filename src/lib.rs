@@ -1,7 +1,7 @@
 extern crate num;
 
 mod vector;
-//mod matrix;
+mod matrix;
 
 pub use vector::{
     Vec2,

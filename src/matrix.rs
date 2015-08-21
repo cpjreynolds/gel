@@ -11,7 +11,10 @@ use num::{
     One,
 };
 
-use vector::Vec4;
+use vector::{
+    Vec3,
+    Vec4,
+};
 
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd)]
 pub struct Mat4(pub [Vec4; 4]);
@@ -154,11 +157,11 @@ impl Transpose for Mat4 {
 }
 
 pub trait Translate {
-    fn translation(v: Vec4) -> Self;
+    fn translation(v: Vec3) -> Self;
 }
 
 impl Translate for Mat4 {
-    fn translation(v: Vec4) -> Self {
+    fn translation(v: Vec3) -> Self {
         let mut result = Mat4::one();
         result[3][0] = v[0];
         result[3][1] = v[1];
