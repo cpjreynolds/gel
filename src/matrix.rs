@@ -1,9 +1,15 @@
+use std::mem;
 use std::ops::{
     Add,
     Sub,
     Mul,
     Deref,
     DerefMut,
+};
+
+use glium::uniforms::{
+    AsUniformValue,
+    UniformValue,
 };
 
 use num::{
@@ -16,6 +22,7 @@ use vector::{
     Vec4,
 };
 
+#[repr(C)]
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd)]
 pub struct Mat4(pub [Vec4; 4]);
 
@@ -172,4 +179,13 @@ impl Translate for Mat4 {
 
 pub trait Rotate {
     fn rotate(&self) -> Self;
+}
+
+impl AsUniformValue for Mat4 {
+    fn as_uniform_value(&self) -> UniformValue {
+        UniformValue::Mat4(unsafe {
+            mem::transmute(*self)
+        })
+    }
+
 }

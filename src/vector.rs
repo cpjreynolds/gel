@@ -157,6 +157,14 @@ impl Zero for Vec2 {
     }
 }
 
+impl AsRef<[f32; 2]> for Vec2 {
+    fn as_ref<'a>(&'a self) -> &'a [f32; 2] {
+        unsafe {
+            mem::transmute(self)
+        }
+    }
+}
+
 impl From<[f32; 2]> for Vec2 {
     fn from(ary: [f32; 2]) -> Self {
         unsafe {
@@ -297,6 +305,14 @@ impl Zero for Vec3 {
     }
 }
 
+impl AsRef<[f32; 3]> for Vec3 {
+    fn as_ref<'a>(&'a self) -> &'a [f32; 3] {
+        unsafe {
+            mem::transmute(self)
+        }
+    }
+}
+
 impl From<[f32; 3]> for Vec3 {
     fn from(ary: [f32; 3]) -> Self {
         unsafe {
@@ -425,6 +441,14 @@ impl Zero for Vec4 {
 
     fn is_zero(&self) -> bool {
         *self == Self::zero()
+    }
+}
+
+impl AsRef<[f32; 4]> for Vec4 {
+    fn as_ref<'a>(&'a self) -> &'a [f32; 4] {
+        unsafe {
+            mem::transmute(self)
+        }
     }
 }
 

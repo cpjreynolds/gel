@@ -1,10 +1,6 @@
 extern crate num;
+extern crate glium;
 
-mod vector;
-mod matrix;
+pub mod vector;
+pub mod matrix;
 
-pub use vector::{
-    Vec2,
-    Vec3,
-    Vec4,
-};
