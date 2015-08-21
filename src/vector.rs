@@ -6,7 +6,7 @@ use std::ops::{
     Deref,
     DerefMut,
 };
-
+use std::mem;
 
 use num::{
     Zero,
@@ -19,8 +19,6 @@ pub trait Vector: Sized + Copy
     + Div<f32, Output=Self> + Mul<f32, Output=Self>
 {
     type Buffer;
-
-    fn from_array(ary: Self::Buffer) -> Self;
 }
 
 pub trait Dot {
@@ -58,14 +56,13 @@ impl<T> Normalize for T
 
 #[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
-pub struct Vec2(pub [f32; 2]);
+pub struct Vec2 {
+    pub x: f32,
+    pub y: f32,
+}
 
 impl Vector for Vec2 {
     type Buffer = [f32; 2];
-
-    fn from_array(ary: Self::Buffer) -> Self {
-        Vec2(ary)
-    }
 }
 
 impl Add for Vec2 {
@@ -152,7 +149,7 @@ impl Dot for Vec2 {
 
 impl Zero for Vec2 {
     fn zero() -> Self {
-        Self::from_array([f32::zero(); 2])
+        Self::from([f32::zero(); 2])
     }
 
     fn is_zero(&self) -> bool {
@@ -160,30 +157,42 @@ impl Zero for Vec2 {
     }
 }
 
+impl From<[f32; 2]> for Vec2 {
+    fn from(ary: [f32; 2]) -> Self {
+        unsafe {
+            mem::transmute(ary)
+        }
+    }
+}
+
 impl Deref for Vec2 {
     type Target = <Self as Vector>::Buffer;
 
     fn deref<'a>(&'a self) -> &'a Self::Target {
-        &self.0
+        unsafe {
+            mem::transmute(self)
+        }
     }
 }
 
 impl DerefMut for Vec2 {
     fn deref_mut<'a>(&'a mut self) -> &'a mut Self::Target {
-        &mut self.0
+        unsafe {
+            mem::transmute(self)
+        }
     }
 }
 
 #[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
-pub struct Vec3(pub [f32; 3]);
+pub struct Vec3 {
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
+}
 
 impl Vector for Vec3 {
     type Buffer = [f32; 3];
-
-    fn from_array(ary: Self::Buffer) -> Self {
-        Vec3(ary)
-    }
 }
 
 impl Add for Vec3 {
@@ -280,7 +289,7 @@ impl Cross for Vec3 {
 
 impl Zero for Vec3 {
     fn zero() -> Self {
-        Self::from_array([f32::zero(); 3])
+        Self::from([f32::zero(); 3])
     }
 
     fn is_zero(&self) -> bool {
@@ -288,30 +297,43 @@ impl Zero for Vec3 {
     }
 }
 
+impl From<[f32; 3]> for Vec3 {
+    fn from(ary: [f32; 3]) -> Self {
+        unsafe {
+            mem::transmute(ary)
+        }
+    }
+}
+
 impl Deref for Vec3 {
     type Target = <Self as Vector>::Buffer;
 
     fn deref<'a>(&'a self) -> &'a Self::Target {
-        &self.0
+        unsafe {
+            mem::transmute(self)
+        }
     }
 }
 
 impl DerefMut for Vec3 {
     fn deref_mut<'a>(&'a mut self) -> &'a mut Self::Target {
-        &mut self.0
+        unsafe {
+            mem::transmute(self)
+        }
     }
 }
 
 #[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
-pub struct Vec4(pub [f32; 4]);
+pub struct Vec4 {
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
+    pub w: f32,
+}
 
 impl Vector for Vec4 {
     type Buffer = [f32; 4];
-
-    fn from_array(ary: Self::Buffer) -> Self {
-        Vec4(ary)
-    }
 }
 
 impl Add for Vec4 {
@@ -398,7 +420,7 @@ impl Dot for Vec4 {
 
 impl Zero for Vec4 {
     fn zero() -> Self {
-        Self::from_array([f32::zero(); 4])
+        Self::from([f32::zero(); 4])
     }
 
     fn is_zero(&self) -> bool {
@@ -406,18 +428,29 @@ impl Zero for Vec4 {
     }
 }
 
+impl From<[f32; 4]> for Vec4 {
+    fn from(ary: [f32; 4]) -> Self {
+        unsafe {
+            mem::transmute(ary)
+        }
+    }
+}
 
 impl Deref for Vec4 {
     type Target = <Self as Vector>::Buffer;
 
     fn deref<'a>(&'a self) -> &'a Self::Target {
-        &self.0
+        unsafe {
+            mem::transmute(self)
+        }
     }
 }
 
 impl DerefMut for Vec4 {
     fn deref_mut<'a>(&'a mut self) -> &'a mut Self::Target {
-        &mut self.0
+        unsafe {
+            mem::transmute(self)
+        }
     }
 }
 
