@@ -133,6 +133,14 @@ impl One for Mat4 {
     }
 }
 
+impl AsRef<[Vec4; 4]> for Mat4 {
+    fn as_ref<'a>(&'a self) -> &'a [Vec4; 4] {
+        unsafe {
+            mem::transmute(self)
+        }
+    }
+}
+
 impl Deref for Mat4 {
     type Target = [Vec4; 4];
 
