@@ -22,6 +22,18 @@ use vector::{
     Vec4,
 };
 
+pub trait Transpose {
+    fn transpose(&self) -> Self;
+}
+
+pub trait Translate {
+    fn translation(v: Vec3) -> Self;
+}
+
+pub trait Rotate {
+    fn rotate(&self) -> Self;
+}
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd)]
 pub struct Mat4(pub [Vec4; 4]);
@@ -155,10 +167,6 @@ impl DerefMut for Mat4 {
     }
 }
 
-pub trait Transpose {
-    fn transpose(&self) -> Self;
-}
-
 impl Transpose for Mat4 {
     fn transpose(&self) -> Self {
         let mut result = Mat4::zero();
@@ -171,10 +179,6 @@ impl Transpose for Mat4 {
     }
 }
 
-pub trait Translate {
-    fn translation(v: Vec3) -> Self;
-}
-
 impl Translate for Mat4 {
     fn translation(v: Vec3) -> Self {
         let mut result = Mat4::one();
@@ -183,10 +187,6 @@ impl Translate for Mat4 {
         result[3][2] = v[2];
         result
     }
-}
-
-pub trait Rotate {
-    fn rotate(&self) -> Self;
 }
 
 impl AsUniformValue for Mat4 {

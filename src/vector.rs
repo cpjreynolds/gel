@@ -12,6 +12,11 @@ use num::{
     Zero,
 };
 
+use glium::uniforms::{
+    AsUniformValue,
+    UniformValue,
+};
+
 pub trait Vector: Sized + Copy 
     + Dot + Normalize + Length
     + Add<Output=Self> + Add<f32, Output=Self>
@@ -59,6 +64,15 @@ impl<T> Normalize for T
 pub struct Vec2 {
     pub x: f32,
     pub y: f32,
+}
+
+impl Vec2 {
+    pub fn new(x: f32, y: f32) -> Vec2 {
+        Vec2 {
+            x: x,
+            y: y,
+        }
+    }
 }
 
 impl Vector for Vec2 {
@@ -191,12 +205,30 @@ impl DerefMut for Vec2 {
     }
 }
 
+impl AsUniformValue for Vec2 {
+    fn as_uniform_value(&self) -> UniformValue {
+        UniformValue::Vec2(unsafe {
+            mem::transmute(*self)
+        })
+    }
+}
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct Vec3 {
     pub x: f32,
     pub y: f32,
     pub z: f32,
+}
+
+impl Vec3 {
+    pub fn new(x: f32, y: f32, z: f32) -> Vec3 {
+        Vec3 {
+            x: x,
+            y: y,
+            z: z,
+        }
+    }
 }
 
 impl Vector for Vec3 {
@@ -339,6 +371,14 @@ impl DerefMut for Vec3 {
     }
 }
 
+impl AsUniformValue for Vec3 {
+    fn as_uniform_value(&self) -> UniformValue {
+        UniformValue::Vec3(unsafe {
+            mem::transmute(*self)
+        })
+    }
+}
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct Vec4 {
@@ -346,6 +386,17 @@ pub struct Vec4 {
     pub y: f32,
     pub z: f32,
     pub w: f32,
+}
+
+impl Vec4 {
+    pub fn new(x: f32, y: f32, z: f32, w: f32) -> Vec4 {
+        Vec4 {
+            x: x,
+            y: y,
+            z: z,
+            w: w,
+        }
+    }
 }
 
 impl Vector for Vec4 {
@@ -478,3 +529,10 @@ impl DerefMut for Vec4 {
     }
 }
 
+impl AsUniformValue for Vec4 {
+    fn as_uniform_value(&self) -> UniformValue {
+        UniformValue::Vec4(unsafe {
+            mem::transmute(*self)
+        })
+    }
+}
