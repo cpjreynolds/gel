@@ -1,8 +1,8 @@
 extern crate num;
 extern crate glium;
 
-pub mod vector;
-pub mod matrix;
+mod vector;
+mod matrix;
 
 
 pub use vector::{
@@ -13,4 +13,23 @@ pub use vector::{
 
 pub use matrix::{
     Mat4,
+};
+
+pub use vector::{
+    Vector,
+    Dot,
+    Cross,
+    Normalize,
+    Length,
+};
+
+pub use matrix::{
+    Translate,
+    Rotate,
+    Transpose,
+    Inverse,
+    Scale,
+    LookAt,
+    Projection,
+    Matrix,
 };
