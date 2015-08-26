@@ -43,6 +43,10 @@ pub trait Length {
     fn length(&self) -> f32;
 }
 
+pub trait Repeat {
+    fn repeat(n: f32) -> Self;
+}
+
 impl<T> Length for T
     where T: Dot + Copy
 {
@@ -188,6 +192,8 @@ macro_rules! vec_impl {
     ($t:ty, $buf:ty) => {
         vec_binop_vec_impl!(Add, add, $t);
         vec_binop_vec_impl!(Sub, sub, $t);
+        vec_binop_vec_impl!(Mul, mul, $t);
+        vec_binop_vec_impl!(Div, div, $t);
 
         vec_binop_scalar_impl!(Add, add, $t);
         vec_binop_scalar_impl!(Sub, sub, $t);
@@ -227,6 +233,12 @@ impl Vec2 {
 
 impl Vector for Vec2 {
     type Buffer = [f32; 2];
+}
+
+impl Repeat for Vec2 {
+    fn repeat(n: f32) -> Self {
+        Vec2 { x: n, y: n }
+    }
 }
 
 impl Zero for Vec2 {
@@ -276,6 +288,12 @@ impl Vec3 {
 
 impl Vector for Vec3 {
     type Buffer = [f32; 3];
+}
+
+impl Repeat for Vec3 {
+    fn repeat(n: f32) -> Self {
+        Vec3 { x: n, y: n, z: n }
+    }
 }
 
 impl Cross for Vec3 {
@@ -333,6 +351,12 @@ impl Vec4 {
 
 impl Vector for Vec4 {
     type Buffer = [f32; 4];
+}
+
+impl Repeat for Vec4 {
+    fn repeat(n: f32) -> Self {
+        Vec4 { x: n, y: n, z: n, w: n }
+    }
 }
 
 impl Zero for Vec4 {
