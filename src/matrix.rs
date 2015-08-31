@@ -30,11 +30,13 @@ use vector::{
 pub trait Translate {
     fn translation(v: Vec3) -> Self;
     fn translate(&self, v: Vec3) -> Self;
+    fn translate_mut(&mut self, v: Vec3);
 }
 
 pub trait Rotate {
     fn rotation(angle: f32, axis: Vec3) -> Self;
     fn rotate(&self, angle: f32, axis: Vec3) -> Self;
+    fn rotate_mut(&mut self, angle: f32, axis: Vec3);
 }
 
 pub trait Inverse {
@@ -48,6 +50,7 @@ pub trait Transpose {
 pub trait Scale {
     fn scaling(v: Vec3) -> Self;
     fn scale(&self, v: Vec3) -> Self;
+    fn scale_mut(&mut self, v: Vec3);
 }
 
 pub trait LookAt {
@@ -305,6 +308,10 @@ impl Translate for Mat4 {
         result[3] = self[0] * v[0] + self[1] * v[1] + self[2] * v[2] + self[3];
         result
     }
+
+    fn translate_mut(&mut self, v: Vec3) {
+        *self = self.translate(v);
+    }
 }
 
 impl Rotate for Mat4 {
@@ -334,13 +341,16 @@ impl Rotate for Mat4 {
         rotate[2][2] = c + temp[2] * axis[2];
 
         let mut result = Self::zero();
-
         result[0] = self[0] * rotate[0][0] + self[1] * rotate[0][1] + self[2] * rotate[0][2];
         result[1] = self[0] * rotate[1][0] + self[1] * rotate[1][1] + self[2] * rotate[1][2];
         result[2] = self[0] * rotate[2][0] + self[1] * rotate[2][1] + self[2] * rotate[2][2];
         result[3] = self[3];
 
         result
+    }
+
+    fn rotate_mut(&mut self, angle: f32, axis: Vec3) {
+        *self = self.rotate(angle, axis);
     }
 }
 
@@ -392,14 +402,15 @@ impl Scale for Mat4 {
     }
 
     fn scale(&self, v: Vec3) -> Self {
-        let mut result = Self::one();
-
+        let mut result = self.clone();
         result[0] = self[0] * v[0];
         result[1] = self[1] * v[1];
         result[2] = self[2] * v[2];
-        result[3] = self[3];
-
         result
+    }
+
+    fn scale_mut(&mut self, v: Vec3) {
+        *self = self.scale(v);
     }
 }
 
