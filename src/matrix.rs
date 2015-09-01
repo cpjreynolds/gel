@@ -68,7 +68,7 @@ pub trait Matrix {
 }
 
 #[repr(C)]
-#[derive(Debug, Copy, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Copy, Clone, PartialEq, PartialOrd, RustcDecodable)]
 pub struct Mat4(pub [Vec4; 4]);
 
 impl Mat4 {

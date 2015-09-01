@@ -1,5 +1,6 @@
 extern crate num;
 extern crate glium;
+extern crate rustc_serialize;
 
 mod vector;
 mod matrix;

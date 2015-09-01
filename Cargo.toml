@@ -12,4 +12,4 @@ license = "MIT"
 [dependencies]
 num = "*"
 glium = "*"
-
+rustc-serialize = "*"

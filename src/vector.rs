@@ -211,7 +211,7 @@ macro_rules! vec_impl {
 }
 
 #[repr(C)]
-#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd, RustcDecodable)]
 pub struct Vec2 {
     pub x: f32,
     pub y: f32,
@@ -260,7 +260,7 @@ impl AsUniformValue for Vec2 {
 }
 
 #[repr(C)]
-#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd, RustcDecodable)]
 pub struct Vec3 {
     pub x: f32,
     pub y: f32,
@@ -325,7 +325,7 @@ impl AsUniformValue for Vec3 {
 }
 
 #[repr(C)]
-#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd, RustcDecodable)]
 pub struct Vec4 {
     pub x: f32,
     pub y: f32,
