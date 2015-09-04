@@ -16,6 +16,7 @@ use num::{
 use glium::uniforms::{
     AsUniformValue,
     UniformValue,
+    UniformType,
 };
 
 pub trait Vector: Sized + Copy
@@ -258,6 +259,7 @@ impl AsUniformValue for Vec2 {
         })
     }
 }
+impl_uniform_block_basic!(Vec2, UniformType::FloatVec2);
 
 #[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, RustcDecodable)]
@@ -324,6 +326,8 @@ impl AsUniformValue for Vec3 {
     }
 }
 
+impl_uniform_block_basic!(Vec3, UniformType::FloatVec3);
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, RustcDecodable)]
 pub struct Vec4 {
@@ -376,3 +380,4 @@ impl AsUniformValue for Vec4 {
         })
     }
 }
+impl_uniform_block_basic!(Vec4, UniformType::FloatVec4);

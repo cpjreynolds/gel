@@ -11,6 +11,7 @@ use std::ops::{
 use glium::uniforms::{
     AsUniformValue,
     UniformValue,
+    UniformType,
 };
 
 use num::{
@@ -447,6 +448,8 @@ impl AsUniformValue for Mat4 {
         })
     }
 }
+
+impl_uniform_block_basic!(Mat4, UniformType::FloatMat4);
 
 impl From<[Vec4; 4]> for Mat4 {
     fn from(ary: [Vec4; 4]) -> Self {
