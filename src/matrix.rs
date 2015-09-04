@@ -80,6 +80,7 @@ impl Mat4 {
     {
         Mat4([
             Vec4 { x: m11, y: m21, z: m31, w: m41, },
+
             Vec4 { x: m12, y: m22, z: m32, w: m42, },
             Vec4 { x: m13, y: m23, z: m33, w: m43, },
             Vec4 { x: m14, y: m24, z: m34, w: m44, },
