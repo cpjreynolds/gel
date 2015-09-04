@@ -22,6 +22,7 @@ pub use vector::{
     Cross,
     Normalize,
     Length,
+    Repeat,
 };
 
 pub use matrix::{
