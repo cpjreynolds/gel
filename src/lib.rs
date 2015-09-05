@@ -1,3 +1,5 @@
+#![feature(const_fn)]
+
 extern crate num;
 extern crate glium;
 extern crate rustc_serialize;
@@ -89,11 +91,11 @@ pub use num::{
 pub use std::f32::consts::PI;
 pub const PI_2: f32 = PI * 2.0;
 
-pub fn radians(n: f32) -> f32 {
+pub const fn radians(n: f32) -> f32 {
     n * (PI / 180.0)
 }
 
-pub fn degrees(n: f32) -> f32 {
+pub const fn degrees(n: f32) -> f32 {
     n * (180.0 / PI)
 }
 

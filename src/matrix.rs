@@ -74,7 +74,7 @@ pub struct Mat4(pub [Vec4; 4]);
 
 impl Mat4 {
     /// Create a new 4x4 matrix.
-    pub fn new(m11: f32, m12: f32, m13: f32, m14: f32,
+    pub const fn new(m11: f32, m12: f32, m13: f32, m14: f32,
                m21: f32, m22: f32, m23: f32, m24: f32,
                m31: f32, m32: f32, m33: f32, m34: f32,
                m41: f32, m42: f32, m43: f32, m44: f32,) -> Mat4

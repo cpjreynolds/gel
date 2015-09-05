@@ -220,14 +220,14 @@ pub struct Vec2 {
 vec_impl!(Vec2, [f32; 2]);
 
 impl Vec2 {
-    pub fn new(x: f32, y: f32) -> Vec2 {
+    pub const fn new(x: f32, y: f32) -> Vec2 {
         Vec2 {
             x: x,
             y: y,
         }
     }
 
-    pub fn extend(&self, z: f32) -> Vec3 {
+    pub const fn extend(&self, z: f32) -> Vec3 {
         Vec3::new(self.x, self.y, z)
     }
 }
@@ -271,7 +271,7 @@ pub struct Vec3 {
 vec_impl!(Vec3, [f32; 3]);
 
 impl Vec3 {
-    pub fn new(x: f32, y: f32, z: f32) -> Vec3 {
+    pub const fn new(x: f32, y: f32, z: f32) -> Vec3 {
         Vec3 {
             x: x,
             y: y,
@@ -279,11 +279,11 @@ impl Vec3 {
         }
     }
 
-    pub fn truncate(&self) -> Vec2 {
+    pub const fn truncate(&self) -> Vec2 {
         Vec2::new(self.x, self.y)
     }
 
-    pub fn extend(&self, w: f32) -> Vec4 {
+    pub const fn extend(&self, w: f32) -> Vec4 {
         Vec4::new(self.x, self.y, self.z, w)
     }
 }
@@ -339,7 +339,7 @@ pub struct Vec4 {
 vec_impl!(Vec4, [f32; 4]);
 
 impl Vec4 {
-    pub fn new(x: f32, y: f32, z: f32, w: f32) -> Vec4 {
+    pub const fn new(x: f32, y: f32, z: f32, w: f32) -> Vec4 {
         Vec4 {
             x: x,
             y: y,
@@ -348,7 +348,7 @@ impl Vec4 {
         }
     }
 
-    pub fn truncate(&self) -> Vec3 {
+    pub const fn truncate(&self) -> Vec3 {
         Vec3::new(self.x, self.y, self.z)
     }
 }
