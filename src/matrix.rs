@@ -451,6 +451,38 @@ impl AsUniformValue for Mat4 {
 
 impl_uniform_block_basic!(Mat4, UniformType::FloatMat4);
 
+impl From<[[f32; 4]; 4]> for Mat4 {
+    fn from(ary: [[f32; 4]; 4]) -> Self {
+        unsafe {
+            mem::transmute(ary)
+        }
+    }
+}
+
+impl Into<[[f32; 4]; 4]> for Mat4 {
+    fn into(self) -> [[f32; 4]; 4] {
+        unsafe {
+            mem::transmute(self)
+        }
+    }
+}
+
+impl AsRef<[[f32; 4]; 4]> for Mat4 {
+    fn as_ref<'a>(&'a self) -> &'a [[f32; 4]; 4] {
+        unsafe {
+            mem::transmute(self)
+        }
+    }
+}
+
+impl AsMut<[[f32; 4]; 4]> for Mat4 {
+    fn as_mut<'a>(&'a mut self) -> &'a mut [[f32; 4]; 4] {
+        unsafe {
+            mem::transmute(self)
+        }
+    }
+}
+
 impl From<[Vec4; 4]> for Mat4 {
     fn from(ary: [Vec4; 4]) -> Self {
         unsafe {
