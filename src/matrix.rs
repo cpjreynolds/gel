@@ -46,6 +46,7 @@ pub trait Inverse {
 
 pub trait Transpose {
     fn transpose(&self) -> Self;
+    fn transpose_mut(&mut self);
 }
 
 pub trait Scale {
@@ -55,7 +56,7 @@ pub trait Scale {
 }
 
 pub trait LookAt {
-    fn look_at(eye: Vec3, center: Vec3, up: Vec3) -> Self;
+    fn look_at(camera: Vec3, target: Vec3, up: Vec3) -> Self;
 }
 
 pub trait Projection {
@@ -298,6 +299,10 @@ impl Transpose for Mat4 {
         }
         result
     }
+
+    fn transpose_mut(&mut self) {
+        *self = self.transpose();
+    }
 }
 
 impl Translate for Mat4 {
@@ -417,8 +422,8 @@ impl Scale for Mat4 {
 }
 
 impl LookAt for Mat4 {
-    fn look_at(eye: Vec3, center: Vec3, up: Vec3) -> Self {
-        let f = (center - eye).normalize();
+    fn look_at(camera: Vec3, target: Vec3, up: Vec3) -> Self {
+        let f = (target - camera).normalize();
         let s = f.cross(&up).normalize();
         let u = s.cross(&f);
 
@@ -433,9 +438,9 @@ impl LookAt for Mat4 {
         result[0][2] = -f.x;
         result[1][2] = -f.y;
         result[2][2] = -f.z;
-        result[3][0] = -(s.dot(&eye));
-        result[3][1] = -(u.dot(&eye));
-        result[3][2] = f.dot(&eye);
+        result[3][0] = -(s.dot(&camera));
+        result[3][1] = -(u.dot(&camera));
+        result[3][2] = f.dot(&camera);
 
         result
     }
@@ -467,22 +472,6 @@ impl Into<[[f32; 4]; 4]> for Mat4 {
     }
 }
 
-impl AsRef<[[f32; 4]; 4]> for Mat4 {
-    fn as_ref<'a>(&'a self) -> &'a [[f32; 4]; 4] {
-        unsafe {
-            mem::transmute(self)
-        }
-    }
-}
-
-impl AsMut<[[f32; 4]; 4]> for Mat4 {
-    fn as_mut<'a>(&'a mut self) -> &'a mut [[f32; 4]; 4] {
-        unsafe {
-            mem::transmute(self)
-        }
-    }
-}
-
 impl From<[Vec4; 4]> for Mat4 {
     fn from(ary: [Vec4; 4]) -> Self {
         unsafe {
@@ -493,6 +482,22 @@ impl From<[Vec4; 4]> for Mat4 {
 
 impl Into<[Vec4; 4]> for Mat4 {
     fn into(self) -> [Vec4; 4] {
+        unsafe {
+            mem::transmute(self)
+        }
+    }
+}
+
+impl AsRef<[[f32; 4]; 4]> for Mat4 {
+    fn as_ref<'a>(&'a self) -> &'a [[f32; 4]; 4] {
+        unsafe {
+            mem::transmute(self)
+        }
+    }
+}
+
+impl AsMut<[[f32; 4]; 4]> for Mat4 {
+    fn as_mut<'a>(&'a mut self) -> &'a mut [[f32; 4]; 4] {
         unsafe {
             mem::transmute(self)
         }
@@ -537,6 +542,7 @@ mod tests {
     };
 
     use super::*;
+    use vector::Vec4;
 
     #[test]
     fn test_matrix_new() {
@@ -590,6 +596,91 @@ mod tests {
                     assert!(mat[i][j] == 1.0);
                 } else {
                     assert!(mat[i][j] == 0.0);
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn test_matrix_from_vec4_array() {
+        let ary = [
+            Vec4::new(1.0, 0.0, 1.0, 0.0),
+            Vec4::new(0.0, 1.0, 0.0, 1.0),
+            Vec4::new(1.0, 0.0, 1.0, 0.0),
+            Vec4::new(0.0, 1.0, 0.0, 1.0),
+        ];
+
+        let mat = Mat4::from(ary);
+
+        for i in 0..4 {
+            for j in 0..4 {
+                if (i + j) % 2 == 0 {
+                    assert!(mat[i][j] == 1.0);
+                } else {
+                    assert!(mat[i][j] == 0.0);
+                }
+            }
+        }
+
+    }
+
+    #[test]
+    fn test_matrix_into_vec4_array() {
+        let mat = Mat4::new(1.0, 0.0, 1.0, 0.0,
+                            0.0, 1.0, 0.0, 1.0,
+                            1.0, 0.0, 1.0, 0.0,
+                            0.0, 1.0, 0.0, 1.0,);
+
+        let vec_ary: [Vec4; 4] = mat.into();
+
+        for i in 0..4 {
+            for j in 0..4 {
+                if (i + j) % 2 == 0 {
+                    assert!(vec_ary[i][j] == 1.0);
+                } else {
+                    assert!(vec_ary[i][j] == 0.0);
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn test_matrix_from_f32_array() {
+        let ary = [
+            [1.0, 0.0, 1.0, 0.0],
+            [0.0, 1.0, 0.0, 1.0],
+            [1.0, 0.0, 1.0, 0.0],
+            [0.0, 1.0, 0.0, 1.0],
+        ];
+
+        let mat = Mat4::from(ary);
+
+        for i in 0..4 {
+            for j in 0..4 {
+                if (i + j) % 2 == 0 {
+                    assert!(mat[i][j] == 1.0);
+                } else {
+                    assert!(mat[i][j] == 0.0);
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn test_matrix_into_f32_array() {
+        let mat = Mat4::new(1.0, 0.0, 1.0, 0.0,
+                            0.0, 1.0, 0.0, 1.0,
+                            1.0, 0.0, 1.0, 0.0,
+                            0.0, 1.0, 0.0, 1.0,);
+
+        let f32_ary: [[f32; 4]; 4] = mat.into();
+
+        for i in 0..4 {
+            for j in 0..4 {
+                if (i + j) % 2 == 0 {
+                    assert!(f32_ary[i][j] == 1.0);
+                } else {
+                    assert!(f32_ary[i][j] == 0.0);
                 }
             }
         }
