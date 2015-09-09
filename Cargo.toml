@@ -2,7 +2,7 @@
 name = "gel"
 version = "0.1.1"
 authors = ["Cole Reynolds <cpjreynolds@gmail.com>"]
-description = "OpenGL Mathematics Library."
+description = "OpenGL Mathematics. A wrapper around nalgebra."
 documentation = "https://cpjreynolds.github.io/gel"
 repository = "https://github.com/cpjreynolds/gel"
 homepage = "https://github.com/cpjreynolds/gel"
@@ -11,6 +11,7 @@ license = "MIT"
 
 [dependencies]
 num = "*"
+nalgebra = "*"
 rustc-serialize = "*"
 
 [dependencies.glium]
