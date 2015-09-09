@@ -20,7 +20,7 @@ pub trait Extend<N> {
 }
 
 /// A trait for objects able to be truncated.
-pub trait Truncate<N> {
+pub trait Truncate {
     type Output;
 
     fn truncate(&self) -> Self::Output;
@@ -91,7 +91,7 @@ impl<N> Extend<N> for Vec5<N>
     }
 }
 
-impl<N> Truncate<N> for Vec1<N>
+impl<N> Truncate for Vec1<N>
     where N: Copy
 {
     type Output = Vec0<N>;
@@ -101,7 +101,7 @@ impl<N> Truncate<N> for Vec1<N>
     }
 }
 
-impl<N> Truncate<N> for Vec2<N>
+impl<N> Truncate for Vec2<N>
     where N: Copy
 {
     type Output = Vec1<N>;
@@ -111,7 +111,7 @@ impl<N> Truncate<N> for Vec2<N>
     }
 }
 
-impl<N> Truncate<N> for Vec3<N>
+impl<N> Truncate for Vec3<N>
     where N: Copy
 {
     type Output = Vec2<N>;
@@ -121,7 +121,7 @@ impl<N> Truncate<N> for Vec3<N>
     }
 }
 
-impl<N> Truncate<N> for Vec4<N>
+impl<N> Truncate for Vec4<N>
     where N: Copy
 {
     type Output = Vec3<N>;
@@ -131,7 +131,7 @@ impl<N> Truncate<N> for Vec4<N>
     }
 }
 
-impl<N> Truncate<N> for Vec5<N>
+impl<N> Truncate for Vec5<N>
     where N: Copy
 {
     type Output = Vec4<N>;
@@ -141,7 +141,7 @@ impl<N> Truncate<N> for Vec5<N>
     }
 }
 
-impl<N> Truncate<N> for Vec6<N>
+impl<N> Truncate for Vec6<N>
     where N: Copy
 {
     type Output = Vec5<N>;
@@ -211,7 +211,7 @@ impl<N> Extend<N> for Pnt5<N>
     }
 }
 
-impl<N> Truncate<N> for Pnt1<N>
+impl<N> Truncate for Pnt1<N>
     where N: Copy
 {
     type Output = Pnt0<N>;
@@ -221,7 +221,7 @@ impl<N> Truncate<N> for Pnt1<N>
     }
 }
 
-impl<N> Truncate<N> for Pnt2<N>
+impl<N> Truncate for Pnt2<N>
     where N: Copy
 {
     type Output = Pnt1<N>;
@@ -231,7 +231,7 @@ impl<N> Truncate<N> for Pnt2<N>
     }
 }
 
-impl<N> Truncate<N> for Pnt3<N>
+impl<N> Truncate for Pnt3<N>
     where N: Copy
 {
     type Output = Pnt2<N>;
@@ -241,7 +241,7 @@ impl<N> Truncate<N> for Pnt3<N>
     }
 }
 
-impl<N> Truncate<N> for Pnt4<N>
+impl<N> Truncate for Pnt4<N>
     where N: Copy
 {
     type Output = Pnt3<N>;
@@ -251,7 +251,7 @@ impl<N> Truncate<N> for Pnt4<N>
     }
 }
 
-impl<N> Truncate<N> for Pnt5<N>
+impl<N> Truncate for Pnt5<N>
     where N: Copy
 {
     type Output = Pnt4<N>;
@@ -261,7 +261,7 @@ impl<N> Truncate<N> for Pnt5<N>
     }
 }
 
-impl<N> Truncate<N> for Pnt6<N>
+impl<N> Truncate for Pnt6<N>
     where N: Copy
 {
     type Output = Pnt5<N>;
@@ -354,4 +354,14 @@ pub fn degrees<N>(n: N) -> N
     n * (<N as Cast<f64>>::from(180.0) / N::pi())
 }
 
+pub fn extend<T, N>(base: T, elem: N) -> T::Output
+    where T: Extend<N>
+{
+    base.extend(elem)
+}
 
+pub fn truncate<T>(base: T) -> T::Output
+    where T: Truncate
+{
+    base.truncate()
+}
