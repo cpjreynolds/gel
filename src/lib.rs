@@ -288,17 +288,17 @@ impl<N> LookAt<N> for Mat4<N>
         let mut result = Self::one();
 
         result.m11 = s.x;
-        result.m21 = s.y;
-        result.m31 = s.z;
-        result.m12 = u.x;
+        result.m12 = s.y;
+        result.m13 = s.z;
+        result.m21 = u.x;
         result.m22 = u.y;
-        result.m32 = u.z;
-        result.m13 = -f.x;
-        result.m23 = -f.y;
+        result.m23 = u.z;
+        result.m31 = -f.x;
+        result.m32 = -f.y;
         result.m33 = -f.z;
-        result.m41 = -(s.dot(camera));
-        result.m42 = -(u.dot(camera));
-        result.m43 = f.dot(camera);
+        result.m14 = -(s.dot(camera));
+        result.m24 = -(u.dot(camera));
+        result.m34 = f.dot(camera);
 
         result
     }
@@ -323,8 +323,8 @@ impl<N> Perspective<N>
         mat.m11 = one / (aspect * tan_half_fov);
         mat.m22 = one / (tan_half_fov);
         mat.m33 = -(zfar + znear) / (zfar - znear);
-        mat.m34 = -one;
-        mat.m43 = -(two * zfar * znear) / (zfar - znear);
+        mat.m43 = -one;
+        mat.m34 = -(two * zfar * znear) / (zfar - znear);
 
         Perspective {
             mat: mat,
