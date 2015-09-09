@@ -338,6 +338,10 @@ impl<N> Perspective<N>
         self.mat.m22 / self.mat.m11
     }
 
+    pub fn set_aspect(&mut self, aspect: N) {
+        self.mat.m11 = self.mat.m22 / aspect;
+    }
+
     pub fn as_mat<'a>(&'a self) -> &'a Mat4<N> {
         &self.mat
     }
