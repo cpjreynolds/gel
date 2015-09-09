@@ -9,6 +9,7 @@ extern crate rustc_serialize;
 use glium::uniforms::{
     AsUniformValue,
     UniformValue,
+    UniformBlock,
 };
 
 pub use num::{
@@ -354,6 +355,52 @@ impl AsUniformValue for Perspective<f32> {
     }
 }
 
+impl UniformBlock for Perspective<f32> {
+    fn matches(layout: &glium::program::BlockLayout, base_offset: usize)
+        -> Result<(), glium::uniforms::LayoutMismatchError>
+    {
+        use glium::program::BlockLayout;
+        use glium::uniforms::LayoutMismatchError;
+        use glium::uniforms::UniformType;
+
+        if let &BlockLayout::BasicType { ty, offset_in_buffer } = layout {
+            if ty != UniformType::FloatMat4 {
+                return Err(LayoutMismatchError::TypeMismatch {
+                    expected: ty,
+                    obtained: UniformType::FloatMat4,
+                });
+            }
+
+            if offset_in_buffer != base_offset {
+                return Err(LayoutMismatchError::OffsetMismatch {
+                    expected: offset_in_buffer,
+                    obtained: base_offset,
+                });
+            }
+
+            Ok(())
+        } else {
+            Err(LayoutMismatchError::LayoutMismatch {
+                expected: layout.clone(),
+                obtained: BlockLayout::BasicType {
+                    ty: UniformType::FloatMat4,
+                    offset_in_buffer: base_offset,
+                }
+            })
+        }
+    }
+
+    #[inline]
+    fn build_layout(base_offset: usize) -> glium::program::BlockLayout {
+        use glium::program::BlockLayout;
+        use glium::uniforms::UniformType;
+
+        BlockLayout::BasicType {
+            ty: UniformType::FloatMat4,
+            offset_in_buffer: base_offset,
+        }
+    }
+}
 pub fn radians<N>(n: N) -> N
     where N: BaseFloat
 {
@@ -377,3 +424,4 @@ pub fn truncate<T>(base: T) -> T::Output
 {
     base.truncate()
 }
+
