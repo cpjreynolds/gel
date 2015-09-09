@@ -4,6 +4,7 @@ extern crate num;
 extern crate glium;
 extern crate rustc_serialize;
 
+// From glium crate.
 macro_rules! impl_uniform_block_basic {
     ($ty:ty, $uniform_ty:expr) => (
         impl ::glium::uniforms::UniformBlock for $ty {
