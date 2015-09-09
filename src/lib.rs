@@ -6,6 +6,11 @@ extern crate nalgebra;
 extern crate glium;
 extern crate rustc_serialize;
 
+use glium::uniforms::{
+    AsUniformValue,
+    UniformValue,
+};
+
 pub use num::{
     One,
     Zero,
@@ -339,6 +344,13 @@ impl<N> Perspective<N>
 {
     pub fn to_mat(&self) -> Mat4<N> {
         self.mat.clone()
+    }
+}
+
+impl AsUniformValue for Perspective<f32> {
+    fn as_uniform_value(&self) -> UniformValue {
+        let val = self.to_mat();
+        UniformValue::Mat4(*val.as_array())
     }
 }
 
