@@ -326,7 +326,7 @@ impl<N> LookAt<N> for Iso3<N>
     where N: BaseFloat
 {
     fn look_at(camera: &Vec3<N>, target: &Vec3<N>, up: &Vec3<N>) -> Self {
-        let rotmat = LookAt::look_at(camera, target, up);
+        let rotmat = LookAt::look_at(&(*target - *camera), target, up);
         Iso3::new_with_rotmat(-(*camera), rotmat)
     }
 }
