@@ -314,7 +314,7 @@ impl<N> Perspective<N>
 {
     pub fn new(fov: N, aspect: N, znear: N, zfar: N) -> Perspective<N> {
         let one = N::one();
-        let two = N::one() + N::one();
+        let two = one + one;
 
         let tan_half_fov = (fov / two).tan();
 
@@ -332,16 +332,11 @@ impl<N> Perspective<N>
     }
 
     pub fn aspect(&self) -> N {
-        unsafe {
-            self.mat.at_fast((2, 2)) / self.mat.at_fast((1, 1))
-        }
+        self.mat.m22 / self.mat.m11
     }
 
     pub fn set_aspect(&mut self, aspect: N) {
-        unsafe {
-            let one_tan_half_fov = self.mat.at_fast((2, 2));
-            self.mat.set_fast((1, 1), one_tan_half_fov / aspect);
-        }
+        self.mat.m11 = self.mat.m22 / aspect;
     }
 
     pub fn as_mat<'a>(&'a self) -> &'a Mat4<N> {
