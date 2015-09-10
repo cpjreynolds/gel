@@ -299,10 +299,23 @@ impl<N> LookAt<N> for Iso3<N>
     where N: BaseFloat
 {
     fn look_at(camera: &Vec3<N>, target: &Vec3<N>, up: &Vec3<N>) -> Self {
-        let rotmat: Rot3<N> = LookAt::look_at(camera, target, up);
-        let tx = -(rotmat.row(0).dot(camera));
-        let ty = -(rotmat.row(1).dot(camera));
-        let tz = rotmat.row(2).dot(camera);
+
+        let zaxis = (*target - *camera).normalize();
+        let xaxis = zaxis.cross(up).normalize();
+        let yaxis = xaxis.cross(&zaxis);
+
+        let mat = Mat3::new(xaxis.x, xaxis.y, xaxis.z,
+                            yaxis.x, yaxis.y, yaxis.z,
+                            -zaxis.x, -zaxis.y, -zaxis.z);
+
+        let rotmat = unsafe {
+            Rot3::new_with_mat(mat)
+        };
+
+        let tx = -(xaxis.dot(camera));
+        let ty = -(yaxis.dot(camera));
+        let tz = zaxis.dot(camera);
+
         Iso3::new_with_rotmat(Vec3::new(tx, ty, tz), rotmat)
     }
 }
