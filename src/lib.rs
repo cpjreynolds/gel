@@ -304,6 +304,33 @@ impl<N> LookAt<N> for Mat4<N>
     }
 }
 
+impl<N> LookAt<N> for Rot3<N>
+    where N: BaseFloat
+{
+    fn look_at(camera: &Vec3<N>, target: &Vec3<N>, up: &Vec3<N>) -> Self {
+        let zaxis = (*target - *camera).normalize();
+        let xaxis = zaxis.cross(up).normalize();
+        let yaxis = xaxis.cross(&zaxis);
+
+        let mat = Mat3::new(xaxis.x, xaxis.y, xaxis.z,
+                            yaxis.x, yaxis.y, yaxis.z,
+                            -zaxis.x, -zaxis.y, -zaxis.z);
+
+        unsafe {
+            Rot3::new_with_mat(mat)
+        }
+    }
+}
+
+impl<N> LookAt<N> for Iso3<N>
+    where N: BaseFloat
+{
+    fn look_at(camera: &Vec3<N>, target: &Vec3<N>, up: &Vec3<N>) -> Self {
+        let rotmat = LookAt::look_at(camera, target, up);
+        Iso3::new_with_rotmat(*camera, rotmat)
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, RustcDecodable, RustcEncodable)]
 pub struct Perspective<N> {
     mat: Mat4<N>,
