@@ -312,11 +312,13 @@ impl<N> LookAt<N> for Iso3<N>
             Rot3::new_with_mat(mat)
         };
 
+        /*
         let tx = -(camera.dot(&xaxis));
         let ty = -(camera.dot(&yaxis));
         let tz = camera.dot(&zaxis);
+        */
 
-        Iso3::new_with_rotmat(Vec3::new(tx, ty, tz), rotmat)
+        Iso3::new_with_rotmat(zero(), rotmat).prepend_translation(camera)
     }
 }
 
