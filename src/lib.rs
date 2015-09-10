@@ -281,24 +281,24 @@ impl<N> LookAt<N> for Mat4<N>
     where N: BaseFloat
 {
     fn look_at(camera: &Vec3<N>, target: &Vec3<N>, up: &Vec3<N>) -> Self {
-        let f = (*target - *camera).normalize();
-        let s = f.cross(up).normalize();
-        let u = s.cross(&f);
+        let zaxis = (*target - *camera).normalize();
+        let xaxis = zaxis.cross(up).normalize();
+        let yaxis = xaxis.cross(&zaxis);
 
         let mut result = Self::one();
 
-        result.m11 = s.x;
-        result.m12 = s.y;
-        result.m13 = s.z;
-        result.m21 = u.x;
-        result.m22 = u.y;
-        result.m23 = u.z;
-        result.m31 = -f.x;
-        result.m32 = -f.y;
-        result.m33 = -f.z;
-        result.m14 = -(s.dot(camera));
-        result.m24 = -(u.dot(camera));
-        result.m34 = f.dot(camera);
+        result.m11 = xaxis.x;
+        result.m12 = xaxis.y;
+        result.m13 = xaxis.z;
+        result.m21 = yaxis.x;
+        result.m22 = yaxis.y;
+        result.m23 = yaxis.z;
+        result.m31 = -zaxis.x;
+        result.m32 = -zaxis.y;
+        result.m33 = -zaxis.z;
+        result.m14 = -(xaxis.dot(camera));
+        result.m24 = -(yaxis.dot(camera));
+        result.m34 = zaxis.dot(camera);
 
         result
     }
