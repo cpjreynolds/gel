@@ -287,20 +287,18 @@ impl<N> LookAt<N> for Mat4<N>
 
         let mut result = Self::one();
 
-        unsafe {
-            result.set_fast((1, 1), s.x);
-            result.set_fast((1, 2), s.y);
-            result.set_fast((1, 3), s.z);
-            result.set_fast((2, 1), u.x);
-            result.set_fast((2, 2), u.y);
-            result.set_fast((2, 3), u.z);
-            result.set_fast((3, 1), -f.x);
-            result.set_fast((3, 2), -f.y);
-            result.set_fast((3, 3), -f.z);
-            result.set_fast((1, 4), -(s.dot(camera)));
-            result.set_fast((2, 4), -(u.dot(camera)));
-            result.set_fast((3, 4), f.dot(camera));
-        }
+        result.m11 = s.x;
+        result.m12 = s.y;
+        result.m13 = s.z;
+        result.m21 = u.x;
+        result.m22 = u.y;
+        result.m23 = u.z;
+        result.m31 = -f.x;
+        result.m32 = -f.y;
+        result.m33 = -f.z;
+        result.m14 = -(s.dot(camera));
+        result.m24 = -(u.dot(camera));
+        result.m34 = f.dot(camera);
 
         result
     }
@@ -322,13 +320,11 @@ impl<N> Perspective<N>
 
         let mut mat = Mat4::zero();
 
-        unsafe {
-            mat.set_fast((1, 1), one / (aspect * tan_half_fov));
-            mat.set_fast((2, 2), one / (tan_half_fov));
-            mat.set_fast((3, 3), -(zfar + znear) / (zfar - znear));
-            mat.set_fast((4, 3), -one);
-            mat.set_fast((3, 4), -(two * zfar * znear) / (zfar - znear));
-        }
+        mat.m11 = one / (aspect * tan_half_fov);
+        mat.m22 = one / (tan_half_fov);
+        mat.m33 = -(zfar + znear) / (zfar - znear);
+        mat.m43 = -one;
+        mat.m34 = -(two * zfar * znear) / (zfar - znear);
 
         Perspective {
             mat: mat,
