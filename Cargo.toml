@@ -13,6 +13,4 @@ license = "MIT"
 num = "*"
 nalgebra = "*"
 rustc-serialize = "*"
-
-[dependencies.glium]
-git = "https://github.com/tomaka/glium.git"
+glium = "*"
