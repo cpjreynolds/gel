@@ -397,7 +397,7 @@ impl<N> Perspective<N>
 impl AsUniformValue for Perspective<f32> {
     fn as_uniform_value(&self) -> UniformValue {
         let val = self.to_mat();
-        UniformValue::Mat4(*val.as_array())
+        UniformValue::Mat4(*val.as_ref())
     }
 }
 
@@ -447,6 +447,7 @@ impl UniformBlock for Perspective<f32> {
         }
     }
 }
+
 pub fn radians<N>(n: N) -> N
     where N: BaseFloat
 {
