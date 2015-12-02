@@ -6,12 +6,14 @@ extern crate nalgebra;
 extern crate glium;
 extern crate rustc_serialize;
 
-use glium::uniforms::{
+use std::mem;
+use std::ptr;
+
+pub use glium::uniforms::{
     AsUniformValue,
     UniformValue,
     UniformBlock,
 };
-
 pub use num::{
     One,
     Zero,
@@ -37,245 +39,66 @@ pub trait LookAt<N> {
     fn look_at(camera: &Vec3<N>, target: &Vec3<N>, up: &Vec3<N>) -> Self;
 }
 
-impl<N> Extend<N> for Vec0<N>
-    where N: Copy
-{
-    type Output = Vec1<N>;
+macro_rules! impl_extend {
+    ($t_in:ident, $t_out:ident, {$($compN:ident),*} + $ext:ident) => {
+        impl<N> Extend<N> for $t_in<N>
+            where N: Copy
+        {
+            type Output = $t_out<N>;
 
-    fn extend(&self, elem: N) -> Self::Output {
-        Vec1::new(elem)
+            fn extend(&self, elem: N) -> Self::Output {
+                unsafe {
+                    let mut res: Self::Output = mem::uninitialized();
+                    $(ptr::write(&mut res.$compN, self.$compN);)*
+                    ptr::write(&mut res.$ext, elem);
+                    res
+                }
+            }
+        }
     }
 }
 
-impl<N> Extend<N> for Vec1<N>
-    where N: Copy
-{
-    type Output = Vec2<N>;
+macro_rules! impl_truncate {
+    ($t_in:ident, $t_out:ident, {$($compN:ident),*}) => {
+        impl<N> Truncate for $t_in<N>
+            where N: Copy
+        {
+            type Output = $t_out<N>;
 
-    fn extend(&self, elem: N) -> Self::Output {
-        Vec2::new(self.x, elem)
+            fn truncate(&self) -> Self::Output {
+                $t_out::new($(self.$compN),*)
+            }
+        }
     }
 }
 
-impl<N> Extend<N> for Vec2<N>
-    where N: Copy
-{
-    type Output = Vec3<N>;
+impl_extend!(Vec0, Vec1, {} + x);
+impl_extend!(Vec1, Vec2, {x} + y);
+impl_extend!(Vec2, Vec3, {x, y} + z);
+impl_extend!(Vec3, Vec4, {x, y, z} + w);
+impl_extend!(Vec4, Vec5, {x, y, z, w} + a);
+impl_extend!(Vec5, Vec6, {x, y, z, w, a} + b);
 
-    fn extend(&self, elem: N) -> Self::Output {
-        Vec3::new(self.x, self.y, elem)
-    }
-}
+impl_extend!(Pnt0, Pnt1, {} + x);
+impl_extend!(Pnt1, Pnt2, {x} + y);
+impl_extend!(Pnt2, Pnt3, {x, y} + z);
+impl_extend!(Pnt3, Pnt4, {x, y, z} + w);
+impl_extend!(Pnt4, Pnt5, {x, y, z, w} + a);
+impl_extend!(Pnt5, Pnt6, {x, y, z, w, a} + b);
 
-impl<N> Extend<N> for Vec3<N>
-    where N: Copy
-{
-    type Output = Vec4<N>;
+impl_truncate!(Vec1, Vec0, {});
+impl_truncate!(Vec2, Vec1, {x});
+impl_truncate!(Vec3, Vec2, {x, y});
+impl_truncate!(Vec4, Vec3, {x, y, z});
+impl_truncate!(Vec5, Vec4, {x, y, z, w});
+impl_truncate!(Vec6, Vec5, {x, y, z, w, a});
 
-    fn extend(&self, elem: N) -> Self::Output {
-        Vec4::new(self.x, self.y, self.z, elem)
-    }
-}
-
-impl<N> Extend<N> for Vec4<N>
-    where N: Copy
-{
-    type Output = Vec5<N>;
-
-    fn extend(&self, elem: N) -> Self::Output {
-        Vec5::new(self.x, self.y, self.z, self.w, elem)
-    }
-}
-
-impl<N> Extend<N> for Vec5<N>
-    where N: Copy
-{
-    type Output = Vec6<N>;
-
-    fn extend(&self, elem: N) -> Self::Output {
-        Vec6::new(self.x, self.y, self.z, self.w, self.a, elem)
-    }
-}
-
-impl<N> Truncate for Vec1<N>
-    where N: Copy
-{
-    type Output = Vec0<N>;
-
-    fn truncate(&self) -> Self::Output {
-        Vec0::new()
-    }
-}
-
-impl<N> Truncate for Vec2<N>
-    where N: Copy
-{
-    type Output = Vec1<N>;
-
-    fn truncate(&self) -> Self::Output {
-        Vec1::new(self.x)
-    }
-}
-
-impl<N> Truncate for Vec3<N>
-    where N: Copy
-{
-    type Output = Vec2<N>;
-
-    fn truncate(&self) -> Self::Output {
-        Vec2::new(self.x, self.y)
-    }
-}
-
-impl<N> Truncate for Vec4<N>
-    where N: Copy
-{
-    type Output = Vec3<N>;
-
-    fn truncate(&self) -> Self::Output {
-        Vec3::new(self.x, self.y, self.z)
-    }
-}
-
-impl<N> Truncate for Vec5<N>
-    where N: Copy
-{
-    type Output = Vec4<N>;
-
-    fn truncate(&self) -> Self::Output {
-        Vec4::new(self.x, self.y, self.z, self.w)
-    }
-}
-
-impl<N> Truncate for Vec6<N>
-    where N: Copy
-{
-    type Output = Vec5<N>;
-
-    fn truncate(&self) -> Self::Output {
-        Vec5::new(self.x, self.y, self.z, self.w, self.a)
-    }
-}
-
-impl<N> Extend<N> for Pnt0<N>
-    where N: Copy
-{
-    type Output = Pnt1<N>;
-
-    fn extend(&self, elem: N) -> Self::Output {
-        Pnt1::new(elem)
-    }
-}
-
-impl<N> Extend<N> for Pnt1<N>
-    where N: Copy
-{
-    type Output = Pnt2<N>;
-
-    fn extend(&self, elem: N) -> Self::Output {
-        Pnt2::new(self.x, elem)
-    }
-}
-
-impl<N> Extend<N> for Pnt2<N>
-    where N: Copy
-{
-    type Output = Pnt3<N>;
-
-    fn extend(&self, elem: N) -> Self::Output {
-        Pnt3::new(self.x, self.y, elem)
-    }
-}
-
-impl<N> Extend<N> for Pnt3<N>
-    where N: Copy
-{
-    type Output = Pnt4<N>;
-
-    fn extend(&self, elem: N) -> Self::Output {
-        Pnt4::new(self.x, self.y, self.z, elem)
-    }
-}
-
-impl<N> Extend<N> for Pnt4<N>
-    where N: Copy
-{
-    type Output = Pnt5<N>;
-
-    fn extend(&self, elem: N) -> Self::Output {
-        Pnt5::new(self.x, self.y, self.z, self.w, elem)
-    }
-}
-
-impl<N> Extend<N> for Pnt5<N>
-    where N: Copy
-{
-    type Output = Pnt6<N>;
-
-    fn extend(&self, elem: N) -> Self::Output {
-        Pnt6::new(self.x, self.y, self.z, self.w, self.a, elem)
-    }
-}
-
-impl<N> Truncate for Pnt1<N>
-    where N: Copy
-{
-    type Output = Pnt0<N>;
-
-    fn truncate(&self) -> Self::Output {
-        Pnt0::new()
-    }
-}
-
-impl<N> Truncate for Pnt2<N>
-    where N: Copy
-{
-    type Output = Pnt1<N>;
-
-    fn truncate(&self) -> Self::Output {
-        Pnt1::new(self.x)
-    }
-}
-
-impl<N> Truncate for Pnt3<N>
-    where N: Copy
-{
-    type Output = Pnt2<N>;
-
-    fn truncate(&self) -> Self::Output {
-        Pnt2::new(self.x, self.y)
-    }
-}
-
-impl<N> Truncate for Pnt4<N>
-    where N: Copy
-{
-    type Output = Pnt3<N>;
-
-    fn truncate(&self) -> Self::Output {
-        Pnt3::new(self.x, self.y, self.z)
-    }
-}
-
-impl<N> Truncate for Pnt5<N>
-    where N: Copy
-{
-    type Output = Pnt4<N>;
-
-    fn truncate(&self) -> Self::Output {
-        Pnt4::new(self.x, self.y, self.z, self.w)
-    }
-}
-
-impl<N> Truncate for Pnt6<N>
-    where N: Copy
-{
-    type Output = Pnt5<N>;
-
-    fn truncate(&self) -> Self::Output {
-        Pnt5::new(self.x, self.y, self.z, self.w, self.a)
-    }
-}
+impl_truncate!(Pnt1, Pnt0, {});
+impl_truncate!(Pnt2, Pnt1, {x});
+impl_truncate!(Pnt3, Pnt2, {x, y});
+impl_truncate!(Pnt4, Pnt3, {x, y, z});
+impl_truncate!(Pnt5, Pnt4, {x, y, z, w});
+impl_truncate!(Pnt6, Pnt5, {x, y, z, w, a});
 
 impl<N> LookAt<N> for Rot3<N>
     where N: BaseFloat
@@ -448,16 +271,29 @@ impl UniformBlock for Perspective<f32> {
     }
 }
 
+pub trait FloatExt: BaseFloat {
+    fn radians(self) -> Self {
+        self * (Self::pi() / <Self as Cast<f64>>::from(180.0))
+    }
+
+    fn degrees(self) -> Self {
+        self * (<Self as Cast<f64>>::from(180.0) / Self::pi())
+    }
+}
+
+impl FloatExt for f32 {}
+impl FloatExt for f64 {}
+
 pub fn radians<N>(n: N) -> N
-    where N: BaseFloat
+    where N: FloatExt
 {
-    n * (N::pi() / <N as Cast<f64>>::from(180.0))
+    n.radians()
 }
 
 pub fn degrees<N>(n: N) -> N
-    where N: BaseFloat
+    where N: FloatExt
 {
-    n * (<N as Cast<f64>>::from(180.0) / N::pi())
+    n.degrees()
 }
 
 pub fn extend<T, N>(base: T, elem: N) -> T::Output
@@ -470,5 +306,50 @@ pub fn truncate<T>(base: T) -> T::Output
     where T: Truncate
 {
     base.truncate()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    macro_rules! test_extend {
+        ($t_in:ident, $t_out:ident, $elt:ident) => {{
+            let x = $t_in::zero();
+            let mut t = $t_out::zero();
+            t.$elt = one::<f32>();
+            let n = x.extend(one());
+
+            assert!(n.approx_eq(&t));
+        }}
+    }
+
+    #[test]
+    fn test_extend() {
+        test_extend!(Vec0, Vec1, x);
+        test_extend!(Vec1, Vec2, y);
+        test_extend!(Vec2, Vec3, z);
+        test_extend!(Vec3, Vec4, w);
+        test_extend!(Vec4, Vec5, a);
+        test_extend!(Vec5, Vec6, b);
+    }
+
+    #[test]
+    fn test_radians() {
+        let x = 360.0;
+        let t = f32::two_pi();
+        let n = x.radians();
+
+        assert!(n.approx_eq(&t));
+    }
+
+    #[test]
+    fn test_degrees() {
+        let x = f32::two_pi();
+        let t = 360.0;
+        let n = x.degrees();
+
+        assert!(n.approx_eq(&t));
+    }
+
 }
 
