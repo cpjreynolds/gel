@@ -9,7 +9,7 @@ extern crate rustc_serialize;
 use std::mem;
 use std::ptr;
 
-pub use glium::uniforms::{
+use glium::uniforms::{
     AsUniformValue,
     UniformValue,
     UniformBlock,
@@ -220,7 +220,7 @@ impl<N> Perspective<N>
 impl AsUniformValue for Perspective<f32> {
     fn as_uniform_value(&self) -> UniformValue {
         let val = self.to_mat();
-        UniformValue::Mat4(*val.as_ref())
+        UniformValue::Mat4(unsafe { mem::transmute(val) })
     }
 }
 
